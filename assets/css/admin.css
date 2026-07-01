@@ -1,0 +1,44 @@
+body {
+  margin: 0;
+  font-family: "Manrope", sans-serif;
+  color: var(--text);
+  background: radial-gradient(circle at top left, rgba(138, 24, 36, 0.08), transparent 28%), linear-gradient(180deg, #faf6ef 0%, #f3ebdf 100%);
+}
+.admin-wrap { width: min(1180px, calc(100vw - 28px)); margin: 0 auto; padding: 28px 0 52px; }
+.admin-header { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 22px; }
+.admin-brand { display: flex; gap: 16px; align-items: center; }
+.admin-brand img { width: 96px; height: 96px; object-fit: contain; border-radius: 22px; background: rgba(255, 255, 255, 0.9); }
+.admin-grid, .admin-fields, .project-editor-list, .login-form, .action-row { display: grid; gap: 16px; }
+.admin-grid { grid-template-columns: 1fr; }
+.admin-panel, .login-panel {
+  background: rgba(255, 251, 245, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 28px;
+  box-shadow: 0 22px 60px rgba(52, 38, 24, 0.14);
+  padding: 22px;
+  backdrop-filter: blur(14px);
+}
+.admin-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.field, .field-full, .login-form label { display: grid; gap: 8px; }
+.field-full { grid-column: 1 / -1; }
+.field label, .field-full label, .login-form label { font-weight: 700; }
+.field input, .field textarea, .field-full input, .field-full textarea, .field-full input[type="file"], .login-form input {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid rgba(32, 36, 32, 0.12);
+  background: rgba(255, 255, 255, 0.9);
+  padding: 12px 14px;
+  color: var(--text);
+  resize: vertical;
+}
+.field textarea, .field-full textarea { min-height: 110px; }
+.project-editor { border-radius: 20px; border: 1px solid rgba(32, 36, 32, 0.08); padding: 16px; background: rgba(255, 255, 255, 0.7); }
+.project-editor-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.project-actions, .toolbar, .inline-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.toolbar { margin-top: 16px; }
+.admin-note, .login-help, .status-text { color: var(--muted); line-height: 1.6; }
+.status-text.error { color: #9f2531; }
+@media (max-width: 900px) {
+  .admin-fields { grid-template-columns: 1fr; }
+  .admin-header, .project-editor-head { flex-direction: column; align-items: flex-start; }
+}
