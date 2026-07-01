@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | Angelsen Byggservice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/site.css">
+  <link rel="stylesheet" href="../../assets/css/admin.css">
+</head>
+<body>
+  <div class="admin-wrap">
+    <header class="admin-header">
+      <div class="admin-brand">
+        <img src="../../Bilder/Logo/logo.jpg" alt="Angelsen Byggservice logo">
+        <div>
+          <p class="eyebrow">Admin</p>
+          <h1 style="font-size: clamp(2rem, 3vw, 3.2rem); max-width: none;">Administrer innholdet på nettsiden</h1>
+          <p class="admin-note">Denne siden ligger på stien /auth/admin og bruker en enkel frontend-innlogging uten backend.</p>
+        </div>
+      </div>
+      <a class="button secondary" href="../../index.html">Til offentlig side</a>
+    </header>
+    <section class="login-panel" id="loginPanel">
+      <p class="eyebrow">Innlogging</p>
+      <h2>Enkel tilgang til admin</h2>
+      <p class="login-help">Godkjent innlogging er låst til brukeren og passordet du oppga. Løsningen er bevisst enkel og ikke serversikret.</p>
+      <div class="login-form">
+        <label>
+          Brukernavn
+          <input id="usernameInput" type="text" placeholder="SveinAngelsen">
+        </label>
+        <label>
+          Passord
+          <input id="passwordInput" type="password" placeholder="SveinAngelsen123">
+        </label>
+      </div>
+      <div class="toolbar">
+        <button class="button primary" id="loginButton" type="button">Åpne adminpanel</button>
+      </div>
+      <p class="status-text error" id="loginMessage"></p>
+    </section>
+    <section class="admin-panel" id="appPanel" hidden>
+      <div class="admin-grid">
+        <article>
+          <p class="eyebrow">Generelt innhold</p>
+          <div class="admin-fields">
+            <div class="field"><label for="businessNameInput">Firmanavn</label><input id="businessNameInput" type="text"></div>
+            <div class="field"><label for="brandSublineInput">Kort undertekst</label><input id="brandSublineInput" type="text"></div>
+            <div class="field-full"><label for="heroTitleInput">Hero-tittel</label><input id="heroTitleInput" type="text"></div>
+            <div class="field-full"><label for="heroLeadInput">Hero-tekst</label><textarea id="heroLeadInput"></textarea></div>
+            <div class="field-full"><label for="heroImageInput">Hero-bilde sti</label><input id="heroImageInput" type="text"></div>
+            <div class="field"><label for="heroBadgeTitleInput">Hero badge tittel</label><input id="heroBadgeTitleInput" type="text"></div>
+            <div class="field-full"><label for="heroBadgeTextInput">Hero badge tekst</label><textarea id="heroBadgeTextInput"></textarea></div>
+            <div class="field-full"><label for="servicesIntroInput">Ingress til tjenester</label><textarea id="servicesIntroInput"></textarea></div>
+            <div class="field-full"><label for="servicesInput">Tjenester, én per linje</label><textarea id="servicesInput"></textarea></div>
+            <div class="field-full"><label for="highlightsInput">Høydepunkter, format verdi|tekst per linje</label><textarea id="highlightsInput"></textarea></div>
+            <div class="field-full"><label for="heroCardsInput">Infokort, format tittel|tekst per linje</label><textarea id="heroCardsInput"></textarea></div>
+            <div class="field-full"><label for="aboutTitleInput">Om oss-tittel</label><input id="aboutTitleInput" type="text"></div>
+            <div class="field-full"><label for="aboutTextInput">Om oss-tekst</label><textarea id="aboutTextInput"></textarea></div>
+            <div class="field-full"><label for="processInput">Arbeidsmåte, format tittel|tekst per linje</label><textarea id="processInput"></textarea></div>
+          </div>
+        </article>
+        <article>
+          <p class="eyebrow">Kontakt</p>
+          <div class="admin-fields">
+            <div class="field-full"><label for="contactTitleInput">Kontakttittel</label><input id="contactTitleInput" type="text"></div>
+            <div class="field-full"><label for="contactBodyInput">Kontakttekst</label><textarea id="contactBodyInput"></textarea></div>
+            <div class="field"><label for="phoneInput">Telefon</label><input id="phoneInput" type="text"></div>
+            <div class="field"><label for="emailInput">E-post</label><input id="emailInput" type="email"></div>
+            <div class="field"><label for="areaInput">Område</label><input id="areaInput" type="text"></div>
+            <div class="field"><label for="hoursInput">Tilgjengelighet</label><input id="hoursInput" type="text"></div>
+            <div class="field-full"><label for="facebookInput">Facebook-lenke</label><input id="facebookInput" type="text"></div>
+          </div>
+        </article>
+        <article>
+          <p class="eyebrow">Prosjekter</p>
+          <p class="admin-note">Legg til, slett eller sorter prosjekter. Bildestier hentes fra biblioteket under og lagres som relative stier i prosjektet.</p>
+          <div class="project-editor-list" id="projectsEditor"></div>
+          <div class="toolbar"><button class="button secondary" id="addProjectButton" type="button">Legg til prosjekt</button></div>
+        </article>
+        <article>
+          <p class="eyebrow">Bildebibliotek</p>
+          <p class="admin-note">Klikk kopier sti og lim den inn i et prosjekt eller i hero-bilde-feltet.</p>
+          <div class="library-grid" id="libraryGrid"></div>
+        </article>
+        <article>
+          <p class="eyebrow">Lagre og eksport</p>
+          <div class="toolbar">
+            <button class="button primary" id="saveButton" type="button">Lagre endringer</button>
+            <button class="button secondary" id="exportButton" type="button">Eksporter JSON</button>
+            <button class="button secondary" id="importButton" type="button">Importer JSON</button>
+            <button class="button secondary" id="resetButton" type="button">Tilbakestill</button>
+            <button class="button secondary" id="logoutButton" type="button">Logg ut</button>
+          </div>
+          <div class="field-full" style="margin-top: 16px;"><label for="jsonArea">JSON for eksport og import</label><textarea id="jsonArea"></textarea></div>
+          <p class="status-text" id="statusText"></p>
+        </article>
+      </div>
+    </section>
+  </div>
+  <script src="../../assets/js/shared-data.js"></script>
+  <script src="../../assets/js/admin.js"></script>
+</body>
+</html>
