@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Angelsen Byggservice</title>
-  <meta name="description" content="Angelsen Byggservice leverer rehabilitering, flis, vedlikehold og byggearbeid i Bergen og omegn.">
+  <meta name="description" content="Angelsen Byggservice leverer bygg, flis og vedlikehold i Bergen og omegn.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./assets/css/site.css">
 </head>
-<body class="site-body">
+<body>
   <div class="site-shell">
     <header class="site-header">
       <div class="wrap header-row">
@@ -22,66 +22,46 @@
           </div>
         </a>
         <nav class="main-nav" aria-label="Hovedmeny">
-          <a href="#tjenester">Tjenester</a>
           <a href="#prosjekter">Prosjekter</a>
-          <a href="#om">Om oss</a>
           <a href="#kontakt">Kontakt</a>
         </nav>
         <a class="header-phone" id="headerPhone" href="tel:+4746420079">464 20 079</a>
       </div>
     </header>
 
+    <div class="sticky-contact-bar" id="stickyContactBar" aria-hidden="true">
+      <div class="wrap sticky-contact-inner">
+        <button class="button secondary" id="stickyContactButton" type="button">Kontaktskjema</button>
+        <a class="header-phone sticky-phone" id="stickyPhone" href="tel:+4746420079">464 20 079</a>
+      </div>
+    </div>
+
     <main id="top">
       <section class="hero-section">
         <div class="wrap hero-grid">
           <article class="hero-copy reveal">
-            <p class="eyebrow">Lokalt håndverk med ryddig levering</p>
+            <p class="eyebrow">Angelsen Byggservice</p>
             <h1 id="heroTitle">Alt innen bygg, vedlikehold og flis.</h1>
             <p class="hero-lead" id="heroLead"></p>
             <div class="hero-actions">
               <a class="button primary" href="#kontakt">Send forespørsel</a>
               <a class="button secondary" href="#prosjekter">Se prosjekter</a>
             </div>
-            <div class="hero-metrics" id="highlightsList"></div>
+            <div class="service-pills" id="servicePills"></div>
           </article>
 
           <aside class="hero-visual reveal reveal-delay-1">
             <div class="hero-logo-card">
               <img class="hero-logo" src="./Bilder/Logo/logo.jpg" alt="Angelsen Byggservice logo">
               <div>
-                <p class="eyebrow eyebrow-dark">Prosjektfokus</p>
-                <h2 id="heroBadgeTitle">Bad, uteområder og vedlikehold</h2>
-                <p id="heroBadgeText"></p>
+                <p class="eyebrow eyebrow-dark">Lokalt håndverk</p>
+                <h2 id="heroBadgeTitle">Prosjekter med egne bildegallerier</h2>
               </div>
             </div>
             <div class="hero-image-card">
               <img id="heroImage" alt="Utvalgt prosjektbilde">
             </div>
-            <div class="hero-cards" id="heroCards"></div>
           </aside>
-        </div>
-      </section>
-
-      <section class="section-pad" id="tjenester">
-        <div class="wrap">
-          <div class="section-head reveal">
-            <div>
-              <p class="eyebrow">Hva vi leverer</p>
-              <h2>Tjenester tilpasset bolig, oppgradering og vedlikehold</h2>
-            </div>
-            <p id="servicesIntro"></p>
-          </div>
-          <div class="two-col-grid">
-            <article class="glass-card reveal reveal-delay-1">
-              <div class="service-list" id="servicesList"></div>
-            </article>
-            <article class="glass-card reveal reveal-delay-2" id="om">
-              <p class="eyebrow">Arbeidsmåte</p>
-              <h2 id="aboutTitle">En samarbeidspartner som holder orden hele veien</h2>
-              <p class="body-copy" id="aboutText"></p>
-              <div class="process-list" id="processList"></div>
-            </article>
-          </div>
         </div>
       </section>
 
@@ -89,18 +69,12 @@
         <div class="wrap">
           <div class="section-head reveal">
             <div>
-              <p class="eyebrow">Tidligere arbeid</p>
-              <h2>Prosjekter vist som ryddige leveranser</h2>
+              <p class="eyebrow">Prosjekter</p>
+              <h2>Én grid per prosjekt</h2>
             </div>
-            <p>Velg prosjekt for å bla gjennom bilder og se hva som faktisk er levert. Oppsettet er laget for å løfte frem både detaljer, materialer og helhetsinntrykk.</p>
+            <p>Klikk deg gjennom bildene i hvert prosjekt.</p>
           </div>
-          <div class="project-layout">
-            <aside class="project-list-card reveal reveal-delay-1">
-              <p class="eyebrow">Prosjektoversikt</p>
-              <div class="project-nav" id="projectNav"></div>
-            </aside>
-            <article class="project-stage glass-card reveal reveal-delay-2" id="projectStage"></article>
-          </div>
+          <div class="project-grid-list" id="projectGridList"></div>
         </div>
       </section>
 
@@ -109,14 +83,12 @@
           <article class="glass-card reveal">
             <p class="eyebrow">Ta kontakt</p>
             <h2 id="contactTitle">Fortell kort om prosjektet ditt</h2>
-            <p class="body-copy" id="contactBody"></p>
             <div class="contact-list" id="contactList"></div>
           </article>
 
           <article class="glass-card contact-form-card reveal reveal-delay-1">
             <p class="eyebrow">Kontaktskjema</p>
             <h2>Send e-post direkte</h2>
-            <p class="body-copy">Skjemaet åpner e-postklienten din med ferdig utfylt mottaker, emne og melding til Angelsen Byggservice.</p>
             <form id="contactForm" class="contact-form">
               <label>
                 Navn
@@ -132,7 +104,7 @@
               </label>
               <label>
                 Type oppdrag
-                <input id="contactSubject" name="subject" type="text" placeholder="For eksempel bad, terrasse eller vedlikehold">
+                <input id="contactSubject" name="subject" type="text" placeholder="For eksempel bad eller terrasse">
               </label>
               <label class="full-width">
                 Beskrivelse
@@ -152,7 +124,7 @@
       <div class="wrap footer-row">
         <div>
           <strong id="footerBrand">Angelsen Byggservice</strong>
-          <p id="footerSummary">Lokalt håndverk for bolig, uteområder og vedlikehold.</p>
+          <p id="footerSummary">Bergen og omegn.</p>
         </div>
         <div class="footer-links">
           <a id="footerEmail" href="mailto:post@angelsenbyggservice.no">post@angelsenbyggservice.no</a>
@@ -166,6 +138,40 @@
     <div class="lightbox-inner">
       <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Lukk bildevisning">×</button>
       <img id="lightboxImage" alt="Forstørret prosjektbilde">
+    </div>
+  </div>
+
+  <div class="contact-modal" id="contactModal" aria-hidden="true">
+    <div class="contact-modal-inner glass-card">
+      <button class="lightbox-close" id="contactModalClose" type="button" aria-label="Lukk kontaktskjema">×</button>
+      <p class="eyebrow">Kontaktskjema</p>
+      <h2 id="contactModalTitle">Send e-post direkte</h2>
+      <form id="contactModalForm" class="contact-form contact-form-modal">
+        <label>
+          Navn
+          <input id="modalContactName" name="name" type="text" required>
+        </label>
+        <label>
+          Telefon
+          <input id="modalContactPhone" name="phone" type="text" required>
+        </label>
+        <label>
+          E-post
+          <input id="modalContactEmail" name="email" type="email" required>
+        </label>
+        <label>
+          Type oppdrag
+          <input id="modalContactSubject" name="subject" type="text" placeholder="For eksempel bad eller terrasse">
+        </label>
+        <label class="full-width">
+          Beskrivelse
+          <textarea id="modalContactMessage" name="message" rows="6" required></textarea>
+        </label>
+        <div class="form-actions full-width">
+          <button class="button primary" type="submit">Åpne ferdig e-post</button>
+          <p id="contactModalHint">Mottaker settes til firmaets e-postadresse.</p>
+        </div>
+      </form>
     </div>
   </div>
 

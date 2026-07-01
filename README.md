@@ -16,7 +16,8 @@ Adminsiden bruker en enkel frontend-innlogging uten backend eller ekte autentise
 - Brukernavn: `SveinAngelsen`
 - Passord: `SveinAngelsen123`
 - Endringer lagres i nettleserens `localStorage`
-- Innhold kan eksporteres og importeres som JSON
+- Hver opprettede prosjekt-grid blir en egen karusell på forsiden
+- Bilder kan legges inn som URL-er/stier eller lastes opp direkte fra maskinen i admin
 
 ## Kontakt
 

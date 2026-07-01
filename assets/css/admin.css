@@ -7,8 +7,8 @@ body {
 .admin-wrap { width: min(1180px, calc(100vw - 28px)); margin: 0 auto; padding: 28px 0 52px; }
 .admin-header { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 22px; }
 .admin-brand { display: flex; gap: 16px; align-items: center; }
-.admin-brand img { width: 84px; height: 84px; object-fit: contain; border-radius: 22px; background: rgba(255, 255, 255, 0.9); }
-.admin-grid, .admin-fields, .project-editor-list, .library-grid, .login-form, .action-row { display: grid; gap: 16px; }
+.admin-brand img { width: 96px; height: 96px; object-fit: contain; border-radius: 22px; background: rgba(255, 255, 255, 0.9); }
+.admin-grid, .admin-fields, .project-editor-list, .login-form, .action-row { display: grid; gap: 16px; }
 .admin-grid { grid-template-columns: 1fr; }
 .admin-panel, .login-panel {
   background: rgba(255, 251, 245, 0.9);
@@ -22,7 +22,7 @@ body {
 .field, .field-full, .login-form label { display: grid; gap: 8px; }
 .field-full { grid-column: 1 / -1; }
 .field label, .field-full label, .login-form label { font-weight: 700; }
-.field input, .field textarea, .field-full input, .field-full textarea, .login-form input {
+.field input, .field textarea, .field-full input, .field-full textarea, .field-full input[type="file"], .login-form input {
   width: 100%;
   border-radius: 16px;
   border: 1px solid rgba(32, 36, 32, 0.12);
@@ -35,22 +35,10 @@ body {
 .project-editor { border-radius: 20px; border: 1px solid rgba(32, 36, 32, 0.08); padding: 16px; background: rgba(255, 255, 255, 0.7); }
 .project-editor-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
 .project-actions, .toolbar, .inline-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-.library-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); max-height: 320px; overflow: auto; }
-.library-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.76);
-  border: 1px solid rgba(32, 36, 32, 0.08);
-}
-.library-item code { font-size: 0.82rem; color: var(--muted); word-break: break-all; }
 .toolbar { margin-top: 16px; }
 .admin-note, .login-help, .status-text { color: var(--muted); line-height: 1.6; }
 .status-text.error { color: #9f2531; }
 @media (max-width: 900px) {
-  .admin-fields, .library-grid { grid-template-columns: 1fr; }
+  .admin-fields { grid-template-columns: 1fr; }
   .admin-header, .project-editor-head { flex-direction: column; align-items: flex-start; }
 }
