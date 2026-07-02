@@ -2,20 +2,19 @@
   const store = window.AngelsenStore;
   let siteData = store.loadSiteData();
   const imageIndexes = {};
-  const autoSlideHandles = {};
 
   const dom = {
     brandName: document.getElementById("brandName"),
     brandSubline: document.getElementById("brandSubline"),
+    menuToggle: document.getElementById("menuToggle"),
+    headerNavContacts: document.getElementById("headerNavContacts"),
+    headerEmail: document.getElementById("headerEmail"),
     headerPhone: document.getElementById("headerPhone"),
     heroTitle: document.getElementById("heroTitle"),
     heroLead: document.getElementById("heroLead"),
-    heroImage: document.getElementById("heroImage"),
     heroBadgeTitle: document.getElementById("heroBadgeTitle"),
-    servicePills: document.getElementById("servicePills"),
     projectGridList: document.getElementById("projectGridList"),
-    contactTitle: document.getElementById("contactTitle"),
-    contactList: document.getElementById("contactList"),
+    allProjectList: document.getElementById("allProjectList"),
     footerBrand: document.getElementById("footerBrand"),
     footerSummary: document.getElementById("footerSummary"),
     footerEmail: document.getElementById("footerEmail"),
@@ -27,9 +26,6 @@
     contactSubject: document.getElementById("contactSubject"),
     contactMessage: document.getElementById("contactMessage"),
     contactHint: document.getElementById("contactHint"),
-    stickyContactBar: document.getElementById("stickyContactBar"),
-    stickyContactButton: document.getElementById("stickyContactButton"),
-    stickyPhone: document.getElementById("stickyPhone"),
     lightbox: document.getElementById("lightbox"),
     lightboxImage: document.getElementById("lightboxImage"),
     lightboxClose: document.getElementById("lightboxClose"),
@@ -51,85 +47,77 @@
   function renderSite() {
     siteData = store.loadSiteData();
 
-    dom.brandName.textContent = siteData.businessName;
-    dom.brandSubline.textContent = siteData.brandSubline;
-    dom.headerPhone.textContent = siteData.contact.phone;
-    dom.headerPhone.href = "tel:" + store.sanitizePhone(siteData.contact.phone);
-    dom.stickyPhone.textContent = siteData.contact.phone;
-    dom.stickyPhone.href = "tel:" + store.sanitizePhone(siteData.contact.phone);
-    dom.heroTitle.textContent = siteData.heroTitle;
-    dom.heroLead.textContent = siteData.heroLead;
-    dom.heroImage.src = store.resolveAssetPath(siteData.heroImage || siteData.projects[0].images[0]);
-    dom.heroImage.alt = siteData.businessName + " prosjektbilde";
-    dom.heroBadgeTitle.textContent = siteData.heroBadgeTitle;
-    dom.contactTitle.textContent = siteData.contactTitle;
-    dom.contactModalTitle.textContent = siteData.contactTitle;
-    dom.footerBrand.textContent = siteData.businessName;
-    dom.footerSummary.textContent = siteData.contact.area + ".";
-    dom.footerEmail.textContent = siteData.contact.email;
-    dom.footerEmail.href = "mailto:" + siteData.contact.email;
-    dom.footerPhone.textContent = siteData.contact.phone;
-    dom.footerPhone.href = "tel:" + store.sanitizePhone(siteData.contact.phone);
-    dom.contactHint.textContent = "Mottaker settes til " + siteData.contact.email + ".";
-    dom.contactModalHint.textContent = "Mottaker settes til " + siteData.contact.email + ".";
+    setText(dom.brandName, siteData.businessName);
+    setText(dom.brandSubline, siteData.brandSubline);
+    setText(dom.headerEmail, siteData.contact.email);
+    setHref(dom.headerEmail, "mailto:" + siteData.contact.email);
+    setText(dom.headerPhone, siteData.contact.phone);
+    setHref(dom.headerPhone, "tel:" + store.sanitizePhone(siteData.contact.phone));
+    if (document.body.classList.contains("projects-page")) {
+      setText(dom.heroTitle, "Alle prosjekter");
+      setText(dom.heroLead, "Her finner du en samlet oversikt over alle utvalgte prosjekter.");
+    } else {
+      setText(dom.heroTitle, siteData.heroTitle);
+      setText(dom.heroLead, siteData.heroLead);
+    }
+    setText(dom.contactModalTitle, siteData.contactTitle);
+    setText(dom.footerBrand, siteData.businessName);
+    setText(dom.footerSummary, siteData.contact.area + ".");
+    setText(dom.footerEmail, siteData.contact.email);
+    setHref(dom.footerEmail, "mailto:" + siteData.contact.email);
+    setText(dom.footerPhone, siteData.contact.phone);
+    setHref(dom.footerPhone, "tel:" + store.sanitizePhone(siteData.contact.phone));
+    setText(dom.contactHint, "Mottaker settes til " + siteData.contact.email + ".");
+    setText(dom.contactModalHint, "Mottaker settes til " + siteData.contact.email + ".");
 
-    dom.servicePills.innerHTML = siteData.services.map(function (service) {
-      return "<span class=\"service-pill\">" + escapeHtml(service) + "</span>";
-    }).join("");
-
-    dom.contactList.innerHTML = [
-      { mark: "T", title: "Telefon", value: siteData.contact.phone, href: "tel:" + store.sanitizePhone(siteData.contact.phone) },
-      { mark: "E", title: "E-post", value: siteData.contact.email, href: "mailto:" + siteData.contact.email },
-      { mark: "O", title: "Område", value: siteData.contact.area }
-    ].map(function (item) {
-      const content = item.href ? "<a href=\"" + escapeAttribute(item.href) + "\">" + escapeHtml(item.value) + "</a>" : escapeHtml(item.value);
-      return "<div class=\"contact-row\"><div class=\"contact-mark\">" + item.mark + "</div><div><strong>" + item.title + "</strong><span>" + content + "</span></div></div>";
-    }).join("");
-
-    renderProjectGrids();
+    renderProjectLists();
   }
 
-  function renderProjectGrids() {
-    dom.projectGridList.innerHTML = siteData.projects.map(function (project, projectIndex) {
+  function renderProjectLists() {
+    if (dom.projectGridList) {
+      renderProjectGrid(dom.projectGridList, siteData.projects
+        .map(function (project, index) {
+          return { project: project, index: index };
+        })
+        .filter(function (item) {
+          return item.project.showOnHomepage !== false;
+        })
+        .slice(0, 5));
+    }
+    if (dom.allProjectList) {
+      renderProjectGrid(dom.allProjectList, siteData.projects.map(function (project, index) {
+        return { project: project, index: index };
+      }));
+    }
+  }
+
+  function renderProjectGrid(container, projectItems) {
+    container.innerHTML = projectItems.map(function (item) {
+      const project = item.project;
+      const projectIndex = item.index;
       const currentIndex = Math.min(imageIndexes[projectIndex] || 0, project.images.length - 1);
       const currentImage = project.images[currentIndex] || project.images[0];
 
       return "<article class=\"project-carousel-card glass-card reveal reveal-delay-1\">"
         + "<div class=\"project-card-head\">"
-        + "<p class=\"eyebrow\">" + escapeHtml(project.category || "Prosjekt") + "</p>"
         + "<h2>" + escapeHtml(project.title) + "</h2>"
         + "</div>"
         + "<div class=\"gallery-main\">"
+        + "<button class=\"open-lightbox-button gallery-expand-button\" type=\"button\" data-project-index=\"" + projectIndex + "\" aria-label=\"Utvid bilde\"><i class=\"fa-solid fa-up-right-and-down-left-from-center\" aria-hidden=\"true\"></i></button>"
         + "<button class=\"gallery-nav prev\" type=\"button\" data-project-index=\"" + projectIndex + "\" data-shift=\"-1\" aria-label=\"Forrige bilde\">‹</button>"
         + "<img src=\"" + escapeAttribute(store.resolveAssetPath(currentImage)) + "\" alt=\"" + escapeAttribute(project.title + " bilde " + (currentIndex + 1)) + "\">"
         + "<button class=\"gallery-nav next\" type=\"button\" data-project-index=\"" + projectIndex + "\" data-shift=\"1\" aria-label=\"Neste bilde\">›</button>"
-        + "<div class=\"gallery-overlay\"><div><small>Grid " + (projectIndex + 1) + "</small><h3>" + escapeHtml(project.title) + "</h3></div><button class=\"button secondary open-lightbox-button\" type=\"button\" data-project-index=\"" + projectIndex + "\">Åpne stort bilde</button></div>"
-        + "</div>"
-        + "<div class=\"gallery-thumbs\">"
-        + project.images.map(function (image, imageIndex) {
-          const activeClass = imageIndex === currentIndex ? " active" : "";
-          return "<button class=\"gallery-thumb" + activeClass + "\" type=\"button\" data-project-index=\"" + projectIndex + "\" data-image-index=\"" + imageIndex + "\"><img src=\"" + escapeAttribute(store.resolveAssetPath(image)) + "\" alt=\"Miniatyr " + (imageIndex + 1) + "\"></button>";
-        }).join("")
         + "</div>"
         + "</article>";
     }).join("");
 
-    Array.from(dom.projectGridList.querySelectorAll(".gallery-nav")).forEach(function (button) {
+    Array.from(container.querySelectorAll(".gallery-nav")).forEach(function (button) {
       button.addEventListener("click", function () {
         shiftImage(Number(button.getAttribute("data-project-index")), Number(button.getAttribute("data-shift")));
       });
     });
 
-    Array.from(dom.projectGridList.querySelectorAll(".gallery-thumb")).forEach(function (button) {
-      button.addEventListener("click", function () {
-        const projectIndex = Number(button.getAttribute("data-project-index"));
-        imageIndexes[projectIndex] = Number(button.getAttribute("data-image-index"));
-        renderProjectGrids();
-        startAutoSlide(projectIndex);
-      });
-    });
-
-    Array.from(dom.projectGridList.querySelectorAll(".open-lightbox-button")).forEach(function (button) {
+    Array.from(container.querySelectorAll(".open-lightbox-button")).forEach(function (button) {
       button.addEventListener("click", function () {
         const projectIndex = Number(button.getAttribute("data-project-index"));
         const project = siteData.projects[projectIndex];
@@ -137,57 +125,100 @@
       });
     });
 
-    siteData.projects.forEach(function (_project, index) {
-      startAutoSlide(index);
+    Array.from(container.querySelectorAll(".gallery-main img")).forEach(function (image) {
+      image.addEventListener("click", function () {
+        const gallery = image.closest(".gallery-main");
+        if (!gallery) {
+          return;
+        }
+        const projectIndex = Number(gallery.querySelector(".gallery-nav")?.getAttribute("data-project-index"));
+        if (Number.isNaN(projectIndex)) {
+          return;
+        }
+        const project = siteData.projects[projectIndex];
+        openLightbox(project.images[imageIndexes[projectIndex] || 0]);
+      });
     });
+
   }
 
   function shiftImage(projectIndex, step) {
     const project = siteData.projects[projectIndex];
     const currentIndex = imageIndexes[projectIndex] || 0;
     imageIndexes[projectIndex] = (currentIndex + step + project.images.length) % project.images.length;
-    renderProjectGrids();
-    startAutoSlide(projectIndex);
+    renderProjectLists();
   }
 
   function wireEvents() {
-    dom.contactForm.addEventListener("submit", function (event) {
-      event.preventDefault();
-      sendContactMail({
-        name: dom.contactName.value.trim(),
-        phone: dom.contactPhone.value.trim(),
-        email: dom.contactEmail.value.trim(),
-        subject: dom.contactSubject.value.trim(),
-        message: dom.contactMessage.value.trim()
+    if (dom.menuToggle && dom.headerNavContacts) {
+      dom.menuToggle.addEventListener("click", function () {
+        const isOpen = dom.headerNavContacts.classList.toggle("open");
+        dom.menuToggle.classList.toggle("open", isOpen);
+        dom.menuToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
       });
-    });
 
-    dom.contactModalForm.addEventListener("submit", function (event) {
-      event.preventDefault();
-      sendContactMail({
-        name: dom.modalContactName.value.trim(),
-        phone: dom.modalContactPhone.value.trim(),
-        email: dom.modalContactEmail.value.trim(),
-        subject: dom.modalContactSubject.value.trim(),
-        message: dom.modalContactMessage.value.trim()
+      Array.from(dom.headerNavContacts.querySelectorAll("a")).forEach(function (link) {
+        link.addEventListener("click", function () {
+          if (window.innerWidth <= 980) {
+            dom.headerNavContacts.classList.remove("open");
+            dom.menuToggle.classList.remove("open");
+            dom.menuToggle.setAttribute("aria-expanded", "false");
+          }
+        });
       });
-    });
 
-    dom.stickyContactButton.addEventListener("click", openContactModal);
+      window.addEventListener("resize", function () {
+        if (window.innerWidth > 980) {
+          dom.headerNavContacts.classList.remove("open");
+          dom.menuToggle.classList.remove("open");
+          dom.menuToggle.setAttribute("aria-expanded", "false");
+        }
+      });
+    }
 
-    dom.lightboxClose.addEventListener("click", closeLightbox);
-    dom.lightbox.addEventListener("click", function (event) {
-      if (event.target === dom.lightbox) {
-        closeLightbox();
-      }
-    });
+    if (dom.contactForm) {
+      dom.contactForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        sendContactMail({
+          name: dom.contactName.value.trim(),
+          phone: dom.contactPhone.value.trim(),
+          email: dom.contactEmail.value.trim(),
+          subject: dom.contactSubject.value.trim(),
+          message: dom.contactMessage.value.trim()
+        });
+      });
+    }
 
-    dom.contactModalClose.addEventListener("click", closeContactModal);
-    dom.contactModal.addEventListener("click", function (event) {
-      if (event.target === dom.contactModal) {
-        closeContactModal();
-      }
-    });
+    if (dom.contactModalForm) {
+      dom.contactModalForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        sendContactMail({
+          name: dom.modalContactName.value.trim(),
+          phone: dom.modalContactPhone.value.trim(),
+          email: dom.modalContactEmail.value.trim(),
+          subject: dom.modalContactSubject.value.trim(),
+          message: dom.modalContactMessage.value.trim()
+        });
+      });
+    }
+
+    if (dom.lightboxClose && dom.lightbox) {
+      dom.lightboxClose.addEventListener("click", closeLightbox);
+      dom.lightbox.addEventListener("click", function (event) {
+        if (event.target === dom.lightbox) {
+          closeLightbox();
+        }
+      });
+    }
+
+    if (dom.contactModalClose && dom.contactModal) {
+      dom.contactModalClose.addEventListener("click", closeContactModal);
+      dom.contactModal.addEventListener("click", function (event) {
+        if (event.target === dom.contactModal) {
+          closeContactModal();
+        }
+      });
+    }
 
     document.addEventListener("keydown", function (event) {
       if (event.key === "Escape") {
@@ -196,52 +227,43 @@
       }
     });
 
-    window.addEventListener("scroll", toggleStickyContactBar);
-
     window.addEventListener("storage", function () {
       renderSite();
     });
-
-    toggleStickyContactBar();
   }
 
-  function startAutoSlide(projectIndex) {
-    window.clearInterval(autoSlideHandles[projectIndex]);
-    const project = siteData.projects[projectIndex];
-    if (!project || project.images.length < 2) {
-      return;
-    }
-
-    autoSlideHandles[projectIndex] = window.setInterval(function () {
-      shiftImage(projectIndex, 1);
-    }, 4500);
-  }
 
   function openLightbox(image) {
+    if (!dom.lightbox || !dom.lightboxImage) {
+      return;
+    }
     dom.lightboxImage.src = store.resolveAssetPath(image);
     dom.lightbox.classList.add("open");
     dom.lightbox.setAttribute("aria-hidden", "false");
   }
 
   function closeLightbox() {
+    if (!dom.lightbox) {
+      return;
+    }
     dom.lightbox.classList.remove("open");
     dom.lightbox.setAttribute("aria-hidden", "true");
   }
 
   function openContactModal() {
+    if (!dom.contactModal) {
+      return;
+    }
     dom.contactModal.classList.add("open");
     dom.contactModal.setAttribute("aria-hidden", "false");
   }
 
   function closeContactModal() {
+    if (!dom.contactModal) {
+      return;
+    }
     dom.contactModal.classList.remove("open");
     dom.contactModal.setAttribute("aria-hidden", "true");
-  }
-
-  function toggleStickyContactBar() {
-    const shouldShow = window.scrollY > 280;
-    dom.stickyContactBar.classList.toggle("visible", shouldShow);
-    dom.stickyContactBar.setAttribute("aria-hidden", shouldShow ? "false" : "true");
   }
 
   function sendContactMail(values) {
@@ -273,5 +295,17 @@
 
   function escapeAttribute(value) {
     return escapeHtml(value).replace(/`/g, "&#96;");
+  }
+
+  function setText(element, value) {
+    if (element) {
+      element.textContent = value;
+    }
+  }
+
+  function setHref(element, value) {
+    if (element) {
+      element.href = value;
+    }
   }
 }());

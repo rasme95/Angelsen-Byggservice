@@ -14,21 +14,14 @@
     brandSubline: document.getElementById("brandSublineInput"),
     heroTitle: document.getElementById("heroTitleInput"),
     heroLead: document.getElementById("heroLeadInput"),
-    heroImage: document.getElementById("heroImageInput"),
-    heroBadgeTitle: document.getElementById("heroBadgeTitleInput"),
-    services: document.getElementById("servicesInput"),
-    contactTitle: document.getElementById("contactTitleInput"),
     phone: document.getElementById("phoneInput"),
     email: document.getElementById("emailInput"),
     area: document.getElementById("areaInput"),
     projectsEditor: document.getElementById("projectsEditor"),
     addProjectButton: document.getElementById("addProjectButton"),
     saveButton: document.getElementById("saveButton"),
-    exportButton: document.getElementById("exportButton"),
-    importButton: document.getElementById("importButton"),
     resetButton: document.getElementById("resetButton"),
     logoutButton: document.getElementById("logoutButton"),
-    jsonArea: document.getElementById("jsonArea"),
     statusText: document.getElementById("statusText")
   };
 
@@ -44,20 +37,19 @@
     });
 
     dom.addProjectButton.addEventListener("click", function () {
+      const fallbackImage = siteData.projects[0] && siteData.projects[0].images && siteData.projects[0].images[0]
+        ? siteData.projects[0].images[0]
+        : store.defaultData.projects[0].images[0];
       siteData.projects.push({
-        title: "Ny grid " + (siteData.projects.length + 1),
+        title: "Nytt prosjekt " + (siteData.projects.length + 1),
         category: "Prosjekt",
-        images: [siteData.heroImage]
+        showOnHomepage: true,
+        images: [fallbackImage]
       });
       renderProjectEditors();
     });
 
     dom.saveButton.addEventListener("click", saveChanges);
-    dom.exportButton.addEventListener("click", function () {
-      dom.jsonArea.value = JSON.stringify(siteData, null, 2);
-      setStatus("Innhold eksportert som JSON.");
-    });
-    dom.importButton.addEventListener("click", importJson);
     dom.resetButton.addEventListener("click", function () {
       siteData = store.resetSiteData();
       seedForm();
@@ -95,24 +87,19 @@
     dom.brandSubline.value = siteData.brandSubline;
     dom.heroTitle.value = siteData.heroTitle;
     dom.heroLead.value = siteData.heroLead;
-    dom.heroImage.value = siteData.heroImage;
-    dom.heroBadgeTitle.value = siteData.heroBadgeTitle;
-    dom.services.value = siteData.services.join("\n");
-    dom.contactTitle.value = siteData.contactTitle;
     dom.phone.value = siteData.contact.phone;
     dom.email.value = siteData.contact.email;
     dom.area.value = siteData.contact.area;
-    dom.jsonArea.value = "";
     renderProjectEditors();
   }
 
   function renderProjectEditors() {
     dom.projectsEditor.innerHTML = siteData.projects.map(function (project, index) {
       return "<article class=\"project-editor\" data-editor-index=\"" + index + "\">"
-        + "<div class=\"project-editor-head\"><div><strong>" + escapeHtml(project.title) + "</strong><p class=\"admin-note\">Grid " + (index + 1) + "</p></div><div class=\"project-actions\"><button class=\"button secondary\" type=\"button\" data-action=\"up\" data-index=\"" + index + "\">Opp</button><button class=\"button secondary\" type=\"button\" data-action=\"down\" data-index=\"" + index + "\">Ned</button><button class=\"button secondary\" type=\"button\" data-action=\"remove\" data-index=\"" + index + "\">Slett</button></div></div>"
+        + "<div class=\"project-editor-head\"><div><strong>" + escapeHtml(project.title) + "</strong><p class=\"admin-note\">Prosjekt " + (index + 1) + "</p></div><div class=\"project-actions\"><button class=\"button secondary\" type=\"button\" data-action=\"up\" data-index=\"" + index + "\">Opp</button><button class=\"button secondary\" type=\"button\" data-action=\"down\" data-index=\"" + index + "\">Ned</button><button class=\"button secondary\" type=\"button\" data-action=\"remove\" data-index=\"" + index + "\">Slett</button></div></div>"
         + "<div class=\"admin-fields\">"
-        + fieldHtml("Grid-tittel", "title", project.title)
-        + fieldHtml("Kort etikett", "category", project.category)
+        + fieldHtml("Prosjekttittel", "title", project.title)
+        + toggleFieldHtml("Vis på hovedsiden", "showOnHomepage", project.showOnHomepage !== false)
         + fullFieldHtml("Bilde-URL-er eller lokale stier, én per linje", "images", project.images.join("\n"))
         + "<div class=\"field-full\"><label>Last opp bilder fra enhet</label><input type=\"file\" accept=\"image/*\" multiple data-file-input=\"" + index + "\"><p class=\"admin-note\">Du kan også lime inn eksterne bildelenker direkte i feltet over.</p></div>"
         + "</div></article>";
@@ -141,7 +128,7 @@
   function handleProjectAction(action, index) {
     if (action === "remove") {
       if (siteData.projects.length === 1) {
-        setStatus("Det må være minst én grid.", true);
+        setStatus("Det må være minst ett prosjekt.", true);
         return;
       }
       siteData.projects.splice(index, 1);
@@ -166,15 +153,16 @@
 
   function syncProjectFromEditor(index, form) {
     siteData.projects[index] = {
-      title: readField(form, "title") || "Grid " + (index + 1),
-      category: readField(form, "category") || "Prosjekt",
+      title: readField(form, "title") || "Prosjekt " + (index + 1),
+      category: siteData.projects[index] && siteData.projects[index].category ? siteData.projects[index].category : "Prosjekt",
+      showOnHomepage: readToggle(form, "showOnHomepage"),
       images: readField(form, "images").split("\n").map(function (item) {
         return item.trim();
       }).filter(Boolean)
     };
 
     if (!siteData.projects[index].images.length) {
-      siteData.projects[index].images = [siteData.heroImage || store.defaultData.heroImage];
+      siteData.projects[index].images = [store.defaultData.projects[0].images[0]];
     }
   }
 
@@ -206,26 +194,12 @@
     siteData.brandSubline = dom.brandSubline.value.trim() || store.defaultData.brandSubline;
     siteData.heroTitle = dom.heroTitle.value.trim() || store.defaultData.heroTitle;
     siteData.heroLead = dom.heroLead.value.trim() || store.defaultData.heroLead;
-    siteData.heroImage = dom.heroImage.value.trim() || store.defaultData.heroImage;
-    siteData.heroBadgeTitle = dom.heroBadgeTitle.value.trim() || store.defaultData.heroBadgeTitle;
-    siteData.services = dom.services.value.split("\n").map(function (item) { return item.trim(); }).filter(Boolean);
-    siteData.contactTitle = dom.contactTitle.value.trim() || store.defaultData.contactTitle;
     siteData.contact.phone = dom.phone.value.trim() || store.defaultData.contact.phone;
     siteData.contact.email = dom.email.value.trim() || store.defaultData.contact.email;
     siteData.contact.area = dom.area.value.trim() || store.defaultData.contact.area;
     siteData = store.saveSiteData(siteData);
     seedForm();
     setStatus("Endringer lagret.");
-  }
-
-  function importJson() {
-    try {
-      siteData = store.saveSiteData(JSON.parse(dom.jsonArea.value));
-      seedForm();
-      setStatus("JSON importert og lagret.");
-    } catch (error) {
-      setStatus("Kunne ikke importere JSON.", true);
-    }
   }
 
   function setStatus(message, isError) {
@@ -246,6 +220,10 @@
     return "<div class=\"field-full\"><label>" + label + "</label><textarea data-field=\"" + field + "\">" + escapeHtml(value || "") + "</textarea></div>";
   }
 
+  function toggleFieldHtml(label, field, isChecked) {
+    return "<div class=\"field-full toggle-field\"><label class=\"toggle-row\"><input type=\"checkbox\" data-field=\"" + field + "\" " + (isChecked ? "checked" : "") + "><span>" + label + "</span></label></div>";
+  }
+
   function escapeHtml(value) {
     return String(value == null ? "" : value)
       .replace(/&/g, "&amp;")
@@ -257,5 +235,10 @@
 
   function escapeAttribute(value) {
     return escapeHtml(value).replace(/`/g, "&#96;");
+  }
+
+  function readToggle(form, field) {
+    const element = form.querySelector("[data-field='" + field + "']");
+    return element ? element.checked : false;
   }
 }());
