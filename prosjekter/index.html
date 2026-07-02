@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alle prosjekter | Angelsen Byggservice</title>
+  <meta name="description" content="Se alle prosjekter fra Angelsen Byggservice samlet på ett sted.">
+  <link rel="icon" type="image/jpeg" href="../Bilder/Logo/logo.jpg">
+  <link rel="apple-touch-icon" href="../Bilder/Logo/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body class="projects-page">
+  <div class="site-shell">
+    <header class="site-header">
+      <div class="wrap header-row">
+        <a class="brand" href="../index.html" aria-label="Til forsiden">
+          <img class="brand-logo" src="../Bilder/Logo/logo.jpg" alt="Angelsen Byggservice logo">
+          <div class="brand-copy">
+            <strong id="brandName">Angelsen Byggservice</strong>
+            <span id="brandSubline">Tømrer, vedlikehold og rehabilitering</span>
+          </div>
+        </a>
+        <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="headerNavContacts" aria-label="Meny">
+          <span class="menu-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span class="visually-hidden">Meny</span>
+        </button>
+        <div class="header-nav-contacts" id="headerNavContacts">
+          <nav class="main-nav" aria-label="Hovedmeny">
+            <a href="../index.html">Hjem</a>
+            <a href="../#kontakt">Kontakt</a>
+          </nav>
+          <div class="header-contacts">
+            <a class="header-phone" id="headerEmail" href="mailto:angel.bygg@outlook.com">angel.bygg@outlook.com</a>
+            <a class="header-phone" id="headerPhone" href="tel:+4746420079">464 20 079</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="section-pad">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <div class="section-head-copy">
+              <p class="eyebrow">Prosjekter</p>
+              <h1 id="heroTitle">Alle prosjekter</h1>
+              <p class="hero-lead" id="heroLead">Her finner du en samlet oversikt over alle utvalgte prosjekter.</p>
+            </div>
+            <div class="section-head-actions">
+              <a class="button secondary" href="../index.html">Til forsiden</a>
+            </div>
+          </div>
+          <div class="project-grid-list project-page-list" id="allProjectList"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap footer-row">
+        <div>
+          <strong id="footerBrand">Angelsen Byggservice</strong>
+          <p id="footerSummary">Bergen og omegn.</p>
+        </div>
+        <div class="footer-links">
+          <a id="footerEmail" href="mailto:angel.bygg@outlook.com">angel.bygg@outlook.com</a>
+          <a id="footerPhone" href="tel:+4746420079">464 20 079</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <div class="lightbox-inner">
+      <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Lukk bildevisning">×</button>
+      <img id="lightboxImage" alt="Forstørret prosjektbilde">
+    </div>
+  </div>
+
+  <script src="../assets/js/shared-data.js"></script>
+  <script src="../assets/js/site.js"></script>
+</body>
+</html>

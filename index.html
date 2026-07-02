@@ -5,9 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Angelsen Byggservice</title>
   <meta name="description" content="Angelsen Byggservice leverer bygg, flis og vedlikehold i Bergen og omegn.">
+  <link rel="icon" type="image/jpeg" href="./Bilder/Logo/logo.jpg">
+  <link rel="apple-touch-icon" href="./Bilder/Logo/logo.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="./assets/css/site.css">
 </head>
 <body>
@@ -21,20 +24,22 @@
             <span id="brandSubline">Tømrer, vedlikehold og rehabilitering</span>
           </div>
         </a>
-        <nav class="main-nav" aria-label="Hovedmeny">
-          <a href="#prosjekter">Prosjekter</a>
-          <a href="#kontakt">Kontakt</a>
-        </nav>
-        <a class="header-phone" id="headerPhone" href="tel:+4746420079">464 20 079</a>
+        <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="headerNavContacts" aria-label="Meny">
+          <span class="menu-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span class="visually-hidden">Meny</span>
+        </button>
+        <div class="header-nav-contacts" id="headerNavContacts">
+          <nav class="main-nav" aria-label="Hovedmeny">
+            <a href="#prosjekter">Prosjekter</a>
+            <a href="#kontakt">Kontakt</a>
+          </nav>
+          <div class="header-contacts">
+            <a class="header-phone" id="headerEmail" href="mailto:angel.bygg@outlook.com">angel.bygg@outlook.com</a>
+            <a class="header-phone" id="headerPhone" href="tel:+4746420079">464 20 079</a>
+          </div>
+        </div>
       </div>
     </header>
-
-    <div class="sticky-contact-bar" id="stickyContactBar" aria-hidden="true">
-      <div class="wrap sticky-contact-inner">
-        <button class="button secondary" id="stickyContactButton" type="button">Kontaktskjema</button>
-        <a class="header-phone sticky-phone" id="stickyPhone" href="tel:+4746420079">464 20 079</a>
-      </div>
-    </div>
 
     <main id="top">
       <section class="hero-section">
@@ -45,21 +50,16 @@
             <p class="hero-lead" id="heroLead"></p>
             <div class="hero-actions">
               <a class="button primary" href="#kontakt">Send forespørsel</a>
-              <a class="button secondary" href="#prosjekter">Se prosjekter</a>
             </div>
-            <div class="service-pills" id="servicePills"></div>
           </article>
 
           <aside class="hero-visual reveal reveal-delay-1">
             <div class="hero-logo-card">
               <img class="hero-logo" src="./Bilder/Logo/logo.jpg" alt="Angelsen Byggservice logo">
               <div>
-                <p class="eyebrow eyebrow-dark">Lokalt håndverk</p>
-                <h2 id="heroBadgeTitle">Prosjekter med egne bildegallerier</h2>
+                <h2 id="heroBadgeTitle"><span class="no-wrap">Én samarbeidspartner</span><br>Alle fag.</h2>
+                <p class="hero-partner-copy">Rørlegger, elektriker, støper, membran, maler og anleggsgartner.</p>
               </div>
-            </div>
-            <div class="hero-image-card">
-              <img id="heroImage" alt="Utvalgt prosjektbilde">
             </div>
           </aside>
         </div>
@@ -68,11 +68,13 @@
       <section class="section-pad" id="prosjekter">
         <div class="wrap">
           <div class="section-head reveal">
-            <div>
+            <div class="section-head-copy">
               <p class="eyebrow">Prosjekter</p>
-              <h2>Én grid per prosjekt</h2>
+              <h2>Utforsk utvalgte prosjekter</h2>
             </div>
-            <p>Klikk deg gjennom bildene i hvert prosjekt.</p>
+            <div class="section-head-actions">
+              <a class="button secondary" href="./prosjekter/index.html">Alle prosjekter</a>
+            </div>
           </div>
           <div class="project-grid-list" id="projectGridList"></div>
         </div>
@@ -80,12 +82,6 @@
 
       <section class="section-pad" id="kontakt">
         <div class="wrap contact-grid">
-          <article class="glass-card reveal">
-            <p class="eyebrow">Ta kontakt</p>
-            <h2 id="contactTitle">Fortell kort om prosjektet ditt</h2>
-            <div class="contact-list" id="contactList"></div>
-          </article>
-
           <article class="glass-card contact-form-card reveal reveal-delay-1">
             <p class="eyebrow">Kontaktskjema</p>
             <h2>Send e-post direkte</h2>
@@ -127,7 +123,7 @@
           <p id="footerSummary">Bergen og omegn.</p>
         </div>
         <div class="footer-links">
-          <a id="footerEmail" href="mailto:post@angelsenbyggservice.no">post@angelsenbyggservice.no</a>
+          <a id="footerEmail" href="mailto:angel.bygg@outlook.com">angel.bygg@outlook.com</a>
           <a id="footerPhone" href="tel:+4746420079">464 20 079</a>
         </div>
       </div>

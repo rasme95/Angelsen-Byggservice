@@ -38,6 +38,8 @@ body {
 .toolbar { margin-top: 16px; }
 .admin-note, .login-help, .status-text { color: var(--muted); line-height: 1.6; }
 .status-text.error { color: #9f2531; }
+.toggle-field .toggle-row { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+.toggle-field input[type="checkbox"] { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
 @media (max-width: 900px) {
   .admin-fields { grid-template-columns: 1fr; }
   .admin-header, .project-editor-head { flex-direction: column; align-items: flex-start; }
