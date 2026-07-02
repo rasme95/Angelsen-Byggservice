@@ -186,6 +186,7 @@
           subject: dom.contactSubject.value.trim(),
           message: dom.contactMessage.value.trim()
         });
+        clearContactForm(false);
       });
     }
 
@@ -199,6 +200,7 @@
           subject: dom.modalContactSubject.value.trim(),
           message: dom.modalContactMessage.value.trim()
         });
+        clearContactForm(true);
       });
     }
 
@@ -282,6 +284,23 @@
       + "&body=" + encodeURIComponent(lines.join("\n"));
 
     window.location.href = mailto;
+  }
+
+  function clearContactForm(isModal) {
+    if (isModal) {
+      dom.modalContactName.value = "";
+      dom.modalContactPhone.value = "";
+      dom.modalContactEmail.value = "";
+      dom.modalContactSubject.value = "";
+      dom.modalContactMessage.value = "";
+      return;
+    }
+
+    dom.contactName.value = "";
+    dom.contactPhone.value = "";
+    dom.contactEmail.value = "";
+    dom.contactSubject.value = "";
+    dom.contactMessage.value = "";
   }
 
   function escapeHtml(value) {
