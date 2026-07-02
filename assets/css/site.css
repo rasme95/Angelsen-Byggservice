@@ -206,6 +206,8 @@ h2 { font-size: clamp(1.7rem, 2.6vw, 2.6rem); line-height: 1.04; letter-spacing:
   font-size: clamp(1.6rem, 2.1vw, 2.2rem);
   line-height: 1.1;
   letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 .hero-partner-copy {
   margin-top: 10px;
