@@ -183,7 +183,8 @@ h1, h2, h3, p { margin: 0; }
 h1 { font-size: clamp(2.7rem, 4vw, 4.9rem); line-height: 0.96; letter-spacing: -0.05em; max-width: 12ch; }
 h2 { font-size: clamp(1.7rem, 2.6vw, 2.6rem); line-height: 1.04; letter-spacing: -0.03em; }
 .hero-lead, .section-head p, .contact-list span, #contactHint, .footer-row p { color: var(--muted); line-height: 1.7; }
-.hero-actions, .form-actions, .footer-links { gap: 12px; flex-wrap: wrap; }
+.hero-actions, .form-actions { gap: 12px; flex-wrap: wrap; }
+.footer-links { gap: 12px; flex-wrap: nowrap; }
 .service-pills, .contact-list, .gallery-thumbs { display: grid; gap: 14px; }
 .service-pills { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .service-pill, .contact-row {
@@ -309,8 +310,9 @@ h2 { font-size: clamp(1.7rem, 2.6vw, 2.6rem); line-height: 1.04; letter-spacing:
 .full-width { grid-column: 1 / -1; }
 .form-actions { align-items: center; }
 .site-footer { padding: 14px 0 48px; }
-.footer-row { justify-content: space-between; align-items: center; gap: 16px; color: var(--muted); }
-.footer-links { align-items: center; }
+.footer-row { justify-content: space-between; align-items: flex-start; gap: 16px; color: var(--muted); flex-wrap: nowrap; }
+.footer-row > div:first-child { flex: 0 0 auto; }
+.footer-links { align-items: center; flex: 0 0 auto; white-space: nowrap; }
 .lightbox {
   position: fixed;
   inset: 0;
@@ -451,7 +453,7 @@ body.projects-page .project-carousel-card {
     top: 0;
     z-index: 120;
   }
-  .footer-row, .section-head { flex-direction: column; align-items: flex-start; }
+  .section-head { flex-direction: column; align-items: flex-start; }
   .main-nav { flex-wrap: wrap; }
   .hero-copy, .hero-visual, .glass-card { padding: 20px; }
   .service-pills, .gallery-thumbs, .contact-form { grid-template-columns: 1fr; }

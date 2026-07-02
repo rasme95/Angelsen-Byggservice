@@ -96,7 +96,7 @@
   function renderProjectEditors() {
     dom.projectsEditor.innerHTML = siteData.projects.map(function (project, index) {
       return "<article class=\"project-editor\" data-editor-index=\"" + index + "\">"
-        + "<div class=\"project-editor-head\"><div><strong>" + escapeHtml(project.title) + "</strong><p class=\"admin-note\">Prosjekt " + (index + 1) + "</p></div><div class=\"project-actions\"><button class=\"button secondary\" type=\"button\" data-action=\"up\" data-index=\"" + index + "\">Opp</button><button class=\"button secondary\" type=\"button\" data-action=\"down\" data-index=\"" + index + "\">Ned</button><button class=\"button secondary\" type=\"button\" data-action=\"remove\" data-index=\"" + index + "\">Slett</button></div></div>"
+        + "<div class=\"project-editor-head\"><div><strong>" + escapeHtml(project.title) + "</strong></div><div class=\"project-actions\"><button class=\"button secondary\" type=\"button\" data-action=\"up\" data-index=\"" + index + "\">Opp</button><button class=\"button secondary\" type=\"button\" data-action=\"down\" data-index=\"" + index + "\">Ned</button><button class=\"button secondary\" type=\"button\" data-action=\"remove\" data-index=\"" + index + "\">Slett</button></div></div>"
         + "<div class=\"admin-fields\">"
         + fieldHtml("Prosjekttittel", "title", project.title)
         + toggleFieldHtml("Vis på hovedsiden", "showOnHomepage", project.showOnHomepage !== false)
