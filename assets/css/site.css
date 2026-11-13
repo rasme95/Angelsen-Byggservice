@@ -239,7 +239,7 @@ h2 { font-size: clamp(1.7rem, 2.6vw, 2.6rem); line-height: 1.04; letter-spacing:
   object-position: center;
   background: #ded5ca;
 }
-.gallery-main img { cursor: zoom-in; object-fit: contain; }
+.gallery-main img { cursor: zoom-in; object-fit: cover; object-position: center; }
 .project-carousel-card { display: grid; gap: 18px; }
 .project-card-head { display: grid; gap: 10px; width: min(100%, 540px); margin-inline: auto; }
 .gallery-main {
