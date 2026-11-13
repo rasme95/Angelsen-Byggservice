@@ -122,7 +122,7 @@ button { cursor: pointer; }
 .main-nav a, .footer-links a, .button, .gallery-thumb, .gallery-nav, .lightbox-close {
   transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
-.main-nav a:hover, .footer-links a:hover, .button:hover, .gallery-thumb:hover, .gallery-nav:hover, .lightbox-close:hover { transform: translateY(-1px); }
+.main-nav a:hover, .footer-links a:hover, .button:hover, .gallery-thumb:hover, .lightbox-close:hover { transform: translateY(-1px); }
 .header-phone, .button.primary {
   display: inline-flex;
   align-items: center;
@@ -149,7 +149,7 @@ button { cursor: pointer; }
 .hero-grid, .contact-grid, .project-grid-list { display: grid; gap: 24px; }
 .hero-grid { grid-template-columns: 1.02fr 0.98fr; align-items: stretch; }
 .contact-grid { grid-template-columns: 1fr; }
-.project-grid-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.project-grid-list { grid-template-columns: minmax(0, 1fr); }
 .project-grid-list:empty::after { content: 'Ingen prosjekter å vise akkurat nå.'; color: var(--muted); }
 .section-head-copy { display: grid; gap: 10px; }
 .section-head-actions { display: flex; align-items: center; gap: 12px; }
@@ -187,7 +187,6 @@ button { cursor: pointer; }
 }
 .eyebrow-dark { background: rgba(138, 24, 36, 0.08); color: var(--accent-strong); }
 h1, h2, h3, p { margin: 0; }
-.no-wrap { white-space: nowrap; }
 h1 { font-size: clamp(2.7rem, 4vw, 4.9rem); line-height: 0.96; letter-spacing: -0.05em; max-width: 12ch; }
 h2 { font-size: clamp(1.7rem, 2.6vw, 2.6rem); line-height: 1.04; letter-spacing: -0.03em; }
 .hero-lead, .section-head p, .contact-list span, #contactHint, .footer-row p { color: var(--muted); line-height: 1.7; }
@@ -204,7 +203,7 @@ h2 { font-size: clamp(1.7rem, 2.6vw, 2.6rem); line-height: 1.04; letter-spacing:
 .hero-visual { display: grid; gap: 16px; }
 .hero-logo-card {
   display: grid;
-  grid-template-columns: 180px minmax(0, 1fr);
+  grid-template-columns: minmax(100px, 150px) minmax(0, 1fr);
   gap: 18px;
   padding: 14px;
   align-items: center;
@@ -212,12 +211,12 @@ h2 { font-size: clamp(1.7rem, 2.6vw, 2.6rem); line-height: 1.04; letter-spacing:
   background: linear-gradient(135deg, rgba(138, 24, 36, 0.08), rgba(255, 255, 255, 0.78));
 }
 .hero-logo-card h2 {
-  font-size: clamp(1.6rem, 2.1vw, 2.2rem);
+  font-size: clamp(1.45rem, 1.8vw, 1.95rem);
   line-height: 1.1;
   letter-spacing: -0.02em;
-  overflow-wrap: anywhere;
-  word-break: normal;
+  overflow-wrap: break-word;
 }
+.hero-logo-card > div { min-width: 0; }
 .hero-partner-copy {
   margin-top: 10px;
   color: var(--muted);
@@ -240,14 +239,14 @@ h2 { font-size: clamp(1.7rem, 2.6vw, 2.6rem); line-height: 1.04; letter-spacing:
   object-position: center;
   background: #ded5ca;
 }
-.gallery-main img { cursor: zoom-in; }
+.gallery-main img { cursor: zoom-in; object-fit: contain; }
 .project-carousel-card { display: grid; gap: 18px; }
-.project-card-head { display: grid; gap: 10px; }
+.project-card-head { display: grid; gap: 10px; width: min(100%, 540px); margin-inline: auto; }
 .gallery-main {
-  width: 100%;
+  width: min(100%, 540px);
   margin-inline: auto;
   position: relative;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 3 / 4;
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: #ded5ca;
@@ -283,13 +282,18 @@ h2 { font-size: clamp(1.7rem, 2.6vw, 2.6rem); line-height: 1.04; letter-spacing:
   place-items: center;
   font-size: 1.4rem;
   color: #fff;
-  background: rgba(22, 24, 22, 0.7);
+  background: rgba(22, 24, 22, 0.86);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, .2);
 }
+.gallery-nav svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.gallery-nav:hover { background: #5e1018; transform: translateY(-50%); }
+.gallery-nav:focus-visible, .gallery-expand-button:focus-visible { outline: 3px solid #fff; outline-offset: -5px; box-shadow: 0 0 0 3px #5e1018; }
 .gallery-nav.prev { left: 16px; }
 .gallery-nav.next { right: 16px; }
 .gallery-thumbs {
   display: flex;
-  width: 100%;
+  width: min(100%, 540px);
+  margin-inline: auto;
   gap: 8px;
   overflow-x: auto;
   padding: 2px 2px 7px;
@@ -394,10 +398,6 @@ body.projects-page {
 body.projects-page .project-grid-list {
   gap: 32px;
 }
-body.projects-page .project-carousel-card {
-  width: min(100%, 1100px);
-  margin-inline: auto;
-}
 @media (max-width: 980px) {
   .footer-row { flex-direction: column; }
   .footer-links { flex-wrap: wrap; white-space: normal; }
@@ -495,6 +495,5 @@ body.projects-page .project-carousel-card {
 }
 @media (max-width: 380px) {
   .hero-grid { grid-template-columns: minmax(0, 1fr); }
-  .no-wrap { white-space: normal; }
   h1 { font-size: 2.4rem; }
 }
