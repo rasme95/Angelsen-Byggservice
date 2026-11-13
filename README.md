@@ -10,7 +10,7 @@ På `/auth/admin/` kan administrator redigere kontaktinformasjon, endre rekkefø
 
 **Migrering:** Den gamle administrasjonen lagret endringer bare i nettleserens `localStorage`. De er ikke automatisk overført til den felles lagringen. Kontroller og ta vare på eventuelle lokale endringer før overgangen. Standardprosjektene i kildekoden brukes inntil felles innhold er lagret første gang.
 
-Netlify Blobs-lagrene er felles for nettstedets deployer. Endringer og opplastinger er derfor sperret i forhåndsvisninger. Tidligere versjoner av innholdet lagres i `history/` før hver endring, og prosjektbilder slettes ikke automatisk; gjenoppretting er foreløpig manuell. Etabler også en ekstern sikkerhetskopi av innhold og bilder før løsningen tas i produksjonsbruk; tilbakeføring av kode er ikke sikkerhetskopi av innhold.
+Forhåndsvisninger bruker separate Netlify Blobs-lagre fra produksjon, men deler lagring med andre forhåndsvisninger. Andre deploytyper har ikke lagringstilgang. Tidligere versjoner av innholdet lagres i `history/` før hver endring, og prosjektbilder slettes ikke automatisk; gjenoppretting er foreløpig manuell. Etabler også en ekstern sikkerhetskopi av innhold og bilder før løsningen tas i produksjonsbruk; tilbakeføring av kode er ikke sikkerhetskopi av innhold.
 
 ## Kontakt
 

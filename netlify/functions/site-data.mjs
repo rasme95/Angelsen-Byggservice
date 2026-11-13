@@ -1,6 +1,6 @@
 import { getStore } from '@netlify/blobs';
 import { getUser, verifyRequestOrigin } from '@netlify/identity';
-import { isAdministrator } from '../lib/access.mjs';
+import { isAdministrator, storageName } from '../lib/access.mjs';
 
 const headers = { 'Cache-Control': 'no-store' };
 const isString = (value, max = 500) => typeof value === 'string' && value.length <= max;
@@ -16,9 +16,10 @@ function valid(data) {
 
 export default async (request, context) => {
   try {
-    if (request.method === 'PUT' && context?.deploy?.context !== 'production') return new Response('Endringer kan bare lagres på produksjonssiden.', { status: 403, headers });
+    const name = storageName(context, 'content');
+    if (!name) return new Response('Lagring er ikke tilgjengelig i dette miljøet.', { status: 403, headers });
     if (request.method === 'GET') {
-      const store = getStore({ name: 'angelsen-content', region: 'eu-central-1', consistency: 'strong' });
+      const store = getStore({ name, region: 'eu-central-1', consistency: 'strong' });
       const entry = await store.getWithMetadata('site', { type: 'json', consistency: 'strong' });
       return Response.json({ data: entry?.data ?? null, version: entry?.etag ?? null }, { headers });
     }
@@ -26,7 +27,7 @@ export default async (request, context) => {
     verifyRequestOrigin(request);
     const user = await getUser();
     if (!isAdministrator(user)) return new Response('Ikke tilgang', { status: 403, headers });
-    const store = getStore({ name: 'angelsen-content', region: 'eu-central-1', consistency: 'strong' });
+    const store = getStore({ name, region: 'eu-central-1', consistency: 'strong' });
     if (Number(request.headers.get('content-length') || 0) > 500000) return new Response('For mye innhold', { status: 413, headers });
     const text = await request.text();
     if (text.length > 500000) return new Response('For mye innhold', { status: 413, headers });

@@ -1,14 +1,15 @@
 import { getStore } from '@netlify/blobs';
 import { getUser, verifyRequestOrigin } from '@netlify/identity';
-import { isAdministrator } from '../lib/access.mjs';
+import { isAdministrator, storageName } from '../lib/access.mjs';
 
 export default async (request, context) => {
   try {
-    if (request.method === 'POST' && context?.deploy?.context !== 'production') return new Response('Bilder kan bare lastes opp på produksjonssiden.', { status: 403 });
+    const name = storageName(context, 'images');
+    if (!name) return new Response('Lagring er ikke tilgjengelig i dette miljøet.', { status: 403 });
     if (request.method === 'GET') {
       const id = new URL(request.url).searchParams.get('id') || '';
       if (!/^[a-f0-9-]{36}$/.test(id)) return new Response('Ikke funnet', { status: 404 });
-      const store = getStore({ name: 'angelsen-images', region: 'eu-central-1', consistency: 'strong' });
+      const store = getStore({ name, region: 'eu-central-1', consistency: 'strong' });
       const entry = await store.getWithMetadata(id, { type: 'arrayBuffer' });
       if (!entry) return new Response('Ikke funnet', { status: 404 });
       return new Response(entry.data, { headers: { 'Content-Type': entry.metadata.type, 'Cache-Control': 'public, max-age=31536000, immutable', 'X-Content-Type-Options': 'nosniff' } });
@@ -17,7 +18,7 @@ export default async (request, context) => {
     verifyRequestOrigin(request);
     const user = await getUser();
     if (!isAdministrator(user)) return new Response('Ikke tilgang', { status: 403 });
-    const store = getStore({ name: 'angelsen-images', region: 'eu-central-1', consistency: 'strong' });
+    const store = getStore({ name, region: 'eu-central-1', consistency: 'strong' });
     if (Number(request.headers.get('content-length') || 0) > 4000000) return new Response('Bildet er for stort', { status: 413 });
     const data = new Uint8Array(await request.arrayBuffer());
     if (data.length > 4000000) return new Response('Bildet er for stort', { status: 413 });
