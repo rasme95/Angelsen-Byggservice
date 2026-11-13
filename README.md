@@ -6,7 +6,7 @@ Nettsiden bruker HTML, CSS og JavaScript. Publisert innhold og prosjektbilder la
 
 Før den nye administrasjonen kan brukes, må Netlify Identity aktiveres på nettstedet og registrering settes til kun invitasjon. Inviter administratoren og tildel kontoen rollen `admin` eller `administrator` i Netlify Identity. Administratoren må akseptere invitasjonen og velge passord. Funksjonene avviser endringer og bildeopplastinger uten en av disse rollene. Ingen passord eller nøkler skal legges i kildekoden.
 
-På `/auth/admin/` kan administrator redigere kontaktinformasjon, endre rekkefølge, legge til og fjerne prosjekter og laste opp JPEG-, PNG- eller WebP-bilder på opptil 4 MB per bilde. Endringer blir synlige når de lagres. Bildeopplasting lagrer selve bildet umiddelbart; det vises på nettsiden etter at prosjektet er lagret. Bilder som fjernes fra et prosjekt, slettes ikke automatisk fra lagringen.
+På `/auth/admin/` kan administrator redigere kontaktinformasjon, endre rekkefølge, legge til og fjerne prosjekter og laste opp JPEG-, PNG- eller WebP-bilder. Bilder over 4 MB forsøkes tilpasset automatisk til JPEG før opplasting; gjennomsiktighet blir da hvit. Endringer blir synlige når de lagres. Bildeopplasting lagrer selve bildet umiddelbart; det vises på nettsiden etter at prosjektet er lagret. Bilder som fjernes fra et prosjekt, slettes ikke automatisk fra lagringen.
 
 **Migrering:** Den gamle administrasjonen lagret endringer bare i nettleserens `localStorage`. De er ikke automatisk overført til den felles lagringen. Kontroller og ta vare på eventuelle lokale endringer før overgangen. Standardprosjektene i kildekoden brukes inntil felles innhold er lagret første gang.
 

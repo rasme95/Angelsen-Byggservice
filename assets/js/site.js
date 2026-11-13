@@ -8,6 +8,7 @@
   let publishedData = null;
   const imageIndexes = {};
   let lightboxTrigger = null;
+  let lightboxProjectIndex = null;
 
   const dom = {
     brandName: document.getElementById("brandName"),
@@ -35,6 +36,9 @@
     lightbox: document.getElementById("lightbox"),
     lightboxImage: document.getElementById("lightboxImage"),
     lightboxClose: document.getElementById("lightboxClose"),
+    lightboxPrev: document.getElementById('lightboxPrev'),
+    lightboxNext: document.getElementById('lightboxNext'),
+    lightboxCount: document.getElementById('lightboxCount'),
     contactModal: document.getElementById("contactModal"),
     contactModalClose: document.getElementById("contactModalClose"),
     contactModalTitle: document.getElementById("contactModalTitle"),
@@ -112,11 +116,14 @@
         + "<h2>" + escapeHtml(project.title) + "</h2>"
         + "</div>"
         + "<div class=\"gallery-main\">"
-        + "<button class=\"open-lightbox-button gallery-expand-button\" type=\"button\" data-project-index=\"" + projectIndex + "\" aria-label=\"Utvid bilde\"><i class=\"fa-solid fa-up-right-and-down-left-from-center\" aria-hidden=\"true\"></i></button>"
-        + "<button class=\"gallery-nav prev\" type=\"button\" data-project-index=\"" + projectIndex + "\" data-shift=\"-1\" aria-label=\"Forrige bilde\">‹</button>"
+        + "<button class=\"open-lightbox-button gallery-expand-button\" type=\"button\" data-project-index=\"" + projectIndex + "\" aria-label=\"" + escapeAttribute('Forstørr bilde av ' + project.title) + "\"><span aria-hidden=\"true\">⤢</span></button>"
+        + (project.images.length > 1 ? "<button class=\"gallery-nav prev\" type=\"button\" data-project-index=\"" + projectIndex + "\" data-shift=\"-1\" aria-label=\"" + escapeAttribute('Forrige bilde: ' + project.title) + "\">‹</button>" : '')
         + "<img loading=\"lazy\" decoding=\"async\" src=\"" + escapeAttribute(store.resolveAssetPath(currentImage)) + "\" alt=\"" + escapeAttribute(project.title + " bilde " + (currentIndex + 1)) + "\">"
-        + "<button class=\"gallery-nav next\" type=\"button\" data-project-index=\"" + projectIndex + "\" data-shift=\"1\" aria-label=\"Neste bilde\">›</button>"
+        + (project.images.length > 1 ? "<button class=\"gallery-nav next\" type=\"button\" data-project-index=\"" + projectIndex + "\" data-shift=\"1\" aria-label=\"" + escapeAttribute('Neste bilde: ' + project.title) + "\">›</button><span class=\"gallery-count\" aria-live=\"polite\">" + (currentIndex + 1) + " / " + project.images.length + "</span>" : '')
         + "</div>"
+        + (project.images.length > 1 ? "<div class=\"gallery-thumbs\" aria-label=\"" + escapeAttribute('Bilder for ' + project.title) + "\">" + project.images.map(function (image, index) {
+          return "<button class=\"gallery-thumb" + (index === currentIndex ? ' active' : '') + "\" type=\"button\" data-thumb-project=\"" + projectIndex + "\" data-thumb-index=\"" + index + "\" aria-pressed=\"" + (index === currentIndex) + "\" aria-label=\"" + escapeAttribute('Vis bilde ' + (index + 1) + ' av ' + project.images.length + ': ' + project.title) + "\"><img loading=\"lazy\" decoding=\"async\" src=\"" + escapeAttribute(store.resolveAssetPath(image)) + "\" alt=\"\"></button>";
+        }).join('') + "</div>" : '')
         + "</article>";
     }).join("");
 
@@ -129,8 +136,7 @@
     Array.from(container.querySelectorAll(".open-lightbox-button")).forEach(function (button) {
       button.addEventListener("click", function () {
         const projectIndex = Number(button.getAttribute("data-project-index"));
-        const project = siteData.projects[projectIndex];
-        openLightbox(project.images[imageIndexes[projectIndex] || 0]);
+        openLightbox(projectIndex);
       });
     });
 
@@ -140,13 +146,31 @@
         if (!gallery) {
           return;
         }
-        const projectIndex = Number(gallery.querySelector(".gallery-nav")?.getAttribute("data-project-index"));
+        const projectIndex = Number(gallery.querySelector(".open-lightbox-button")?.getAttribute("data-project-index"));
         if (Number.isNaN(projectIndex)) {
           return;
         }
-        const project = siteData.projects[projectIndex];
-        openLightbox(project.images[imageIndexes[projectIndex] || 0]);
+        openLightbox(projectIndex);
       });
+    });
+
+    Array.from(container.querySelectorAll('.gallery-thumb')).forEach(function (button) {
+      button.addEventListener('click', function () {
+        setImage(Number(button.getAttribute('data-thumb-project')), Number(button.getAttribute('data-thumb-index')));
+      });
+    });
+
+    Array.from(container.querySelectorAll('.gallery-main')).forEach(function (gallery) {
+      let startX = null;
+      gallery.addEventListener('touchstart', function (event) { startX = event.touches[0]?.clientX ?? null; }, { passive: true });
+      gallery.addEventListener('touchend', function (event) {
+        const endX = event.changedTouches[0]?.clientX;
+        if (startX !== null && endX !== undefined && Math.abs(endX - startX) > 50) {
+          const index = Number(gallery.querySelector('.open-lightbox-button').getAttribute('data-project-index'));
+          if (siteData.projects[index].images.length > 1) shiftImage(index, endX < startX ? 1 : -1);
+        }
+        startX = null;
+      }, { passive: true });
     });
 
   }
@@ -154,14 +178,27 @@
   function shiftImage(projectIndex, step) {
     const project = siteData.projects[projectIndex];
     const currentIndex = imageIndexes[projectIndex] || 0;
-    imageIndexes[projectIndex] = (currentIndex + step + project.images.length) % project.images.length;
-    document.querySelectorAll('.gallery-nav[data-project-index="' + projectIndex + '"]').forEach(function (button) {
+    setImage(projectIndex, (currentIndex + step + project.images.length) % project.images.length);
+  }
+
+  function setImage(projectIndex, index) {
+    const project = siteData.projects[projectIndex];
+    imageIndexes[projectIndex] = index;
+    document.querySelectorAll('.open-lightbox-button[data-project-index="' + projectIndex + '"]').forEach(function (button) {
       const image = button.parentElement.querySelector('img');
       if (image) {
         image.src = store.resolveAssetPath(project.images[imageIndexes[projectIndex]]);
         image.alt = project.title + " bilde " + (imageIndexes[projectIndex] + 1);
       }
+      const count = button.parentElement.querySelector('.gallery-count');
+      if (count) count.textContent = (imageIndexes[projectIndex] + 1) + ' / ' + project.images.length;
     });
+    document.querySelectorAll('.gallery-thumb[data-thumb-project="' + projectIndex + '"]').forEach(function (button) {
+      const active = Number(button.getAttribute('data-thumb-index')) === index;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+    if (lightboxProjectIndex === projectIndex && dom.lightbox.classList.contains('open')) updateLightbox();
   }
 
   function wireEvents() {
@@ -219,6 +256,8 @@
 
     if (dom.lightboxClose && dom.lightbox) {
       dom.lightboxClose.addEventListener("click", closeLightbox);
+      dom.lightboxPrev.addEventListener('click', function () { shiftImage(lightboxProjectIndex, -1); });
+      dom.lightboxNext.addEventListener('click', function () { shiftImage(lightboxProjectIndex, 1); });
       dom.lightbox.addEventListener("click", function (event) {
         if (event.target === dom.lightbox) {
           closeLightbox();
@@ -236,11 +275,23 @@
     }
 
     document.addEventListener("keydown", function (event) {
-      if (event.key === "Tab" && dom.lightbox && dom.lightbox.classList.contains("open")) {
-        event.preventDefault();
-        dom.lightboxClose.focus();
+      if (dom.lightbox && dom.lightbox.classList.contains('open')) {
+        if (event.key === 'ArrowLeft' && !dom.lightboxPrev.hidden) { event.preventDefault(); shiftImage(lightboxProjectIndex, -1); }
+        if (event.key === 'ArrowRight' && !dom.lightboxNext.hidden) { event.preventDefault(); shiftImage(lightboxProjectIndex, 1); }
+        if (event.key === 'Tab') {
+          const controls = [dom.lightboxClose, dom.lightboxPrev, dom.lightboxNext].filter(function (item) { return !item.hidden; });
+          const current = controls.indexOf(document.activeElement);
+          if (event.shiftKey && current <= 0) { event.preventDefault(); controls[controls.length - 1].focus(); }
+          else if (!event.shiftKey && (current === controls.length - 1 || current === -1)) { event.preventDefault(); controls[0].focus(); }
+        }
       }
       if (event.key === "Escape") {
+        if (dom.menuToggle && dom.headerNavContacts && dom.headerNavContacts.classList.contains('open')) {
+          dom.headerNavContacts.classList.remove('open');
+          dom.menuToggle.classList.remove('open');
+          dom.menuToggle.setAttribute('aria-expanded', 'false');
+          dom.menuToggle.focus();
+        }
         closeLightbox();
         closeContactModal();
       }
@@ -252,15 +303,26 @@
   }
 
 
-  function openLightbox(image) {
+  function openLightbox(projectIndex) {
     if (!dom.lightbox || !dom.lightboxImage) {
       return;
     }
     lightboxTrigger = document.activeElement;
-    dom.lightboxImage.src = store.resolveAssetPath(image);
+    lightboxProjectIndex = projectIndex;
+    updateLightbox();
     dom.lightbox.classList.add("open");
     dom.lightbox.setAttribute("aria-hidden", "false");
     dom.lightboxClose.focus();
+  }
+
+  function updateLightbox() {
+    const project = siteData.projects[lightboxProjectIndex];
+    const index = imageIndexes[lightboxProjectIndex] || 0;
+    dom.lightboxImage.src = store.resolveAssetPath(project.images[index]);
+    dom.lightboxImage.alt = project.title + ', bilde ' + (index + 1) + ' av ' + project.images.length;
+    dom.lightboxCount.textContent = (index + 1) + ' / ' + project.images.length;
+    dom.lightboxPrev.hidden = project.images.length < 2;
+    dom.lightboxNext.hidden = project.images.length < 2;
   }
 
   function closeLightbox() {
@@ -272,6 +334,7 @@
     dom.lightbox.setAttribute("aria-hidden", "true");
     if (lightboxTrigger && typeof lightboxTrigger.focus === "function") lightboxTrigger.focus();
     lightboxTrigger = null;
+    lightboxProjectIndex = null;
   }
 
   function openContactModal() {

@@ -82,7 +82,7 @@
           <div class="toolbar"><button class="button secondary" id="addProjectButton" type="button">Opprett nytt prosjekt</button></div>
         </article>
 
-        <article>
+        <article class="admin-save-panel">
           <p class="eyebrow">Lagre</p>
           <div class="toolbar">
             <button class="button primary" id="saveButton" type="button">Lagre endringer</button>
@@ -94,6 +94,18 @@
       </div>
     </section>
   </div>
+
+  <dialog id="confirmDialog" class="confirm-dialog" aria-labelledby="confirmTitle" aria-describedby="confirmDescription">
+    <form method="dialog">
+      <p class="eyebrow">Bekreft handling</p>
+      <h2 id="confirmTitle"></h2>
+      <p id="confirmDescription"></p>
+      <div class="toolbar">
+        <button class="button secondary" value="cancel">Avbryt</button>
+        <button class="button primary" id="confirmAction" value="confirm">Fortsett</button>
+      </div>
+    </form>
+  </dialog>
 
   <script src="../../assets/js/shared-data.js"></script>
   <script src="../../assets/js/admin.js"></script>

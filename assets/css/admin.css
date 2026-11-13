@@ -10,6 +10,9 @@ body {
 .admin-brand img { width: 96px; height: 96px; object-fit: contain; border-radius: 22px; background: rgba(255, 255, 255, 0.9); }
 .admin-grid, .admin-fields, .project-editor-list, .login-form, .action-row { display: grid; gap: 16px; }
 .admin-grid { grid-template-columns: 1fr; }
+.admin-save-panel { position: sticky; bottom: 8px; z-index: 20; padding: 14px; border: 1px solid rgba(32, 36, 32, .12); border-radius: 18px; background: rgba(255, 253, 250, .97); box-shadow: 0 10px 32px rgba(52, 38, 24, .14); }
+.admin-save-panel .toolbar { margin-top: 8px; }
+.admin-save-panel .status-text:not(:empty) { margin-top: 8px; }
 .admin-panel, .login-panel {
   background: rgba(255, 251, 245, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.78);
@@ -20,6 +23,7 @@ body {
 }
 .admin-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .field, .field-full, .login-form label { display: grid; gap: 8px; }
+.field label { display: grid; gap: 8px; }
 .field-full { grid-column: 1 / -1; }
 .field label, .field-full label, .login-form label { font-weight: 700; }
 .field input, .field textarea, .field-full input, .field-full textarea, .field-full input[type="file"], .login-form input {
@@ -32,8 +36,19 @@ body {
   resize: vertical;
 }
 .field textarea, .field-full textarea { min-height: 110px; }
-.project-editor { border-radius: 20px; border: 1px solid rgba(32, 36, 32, 0.08); padding: 16px; background: rgba(255, 255, 255, 0.7); }
-.project-editor-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.project-editor-list { gap: 24px; margin-top: 20px; }
+.project-editor { border-radius: 20px; border: 1px solid rgba(32, 36, 32, 0.15); padding: 20px; background: #fffdfa; box-shadow: 0 8px 25px rgba(52, 38, 24, 0.06); }
+.project-editor-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: -20px -20px 20px; padding: 18px 20px; border-radius: 19px 19px 0 0; border-bottom: 1px solid rgba(32, 36, 32, 0.1); background: #f7f0eb; }
+.project-editor-heading { display: grid; gap: 4px; min-width: 0; }
+.project-editor-heading strong { font-size: 1.15rem; overflow-wrap: anywhere; }
+.project-number { color: var(--accent); font-size: .75rem; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; }
+.project-visibility { color: var(--muted); font-size: .85rem; }
+.project-actions button:disabled { opacity: .45; cursor: default; }
+.confirm-dialog { width: min(460px, calc(100vw - 32px)); border: 0; border-radius: 24px; padding: 28px; color: var(--text); background: #fffdfa; box-shadow: var(--shadow); }
+.confirm-dialog::backdrop { background: rgba(20, 22, 20, .65); }
+.confirm-dialog form { display: grid; gap: 16px; }
+.confirm-dialog h2 { font-size: 1.8rem; }
+.confirm-dialog p:not(.eyebrow) { color: var(--muted); line-height: 1.6; }
 .project-actions, .toolbar, .inline-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .toolbar { margin-top: 16px; }
 .admin-note, .login-help, .status-text { color: var(--muted); line-height: 1.6; }

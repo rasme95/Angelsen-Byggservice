@@ -10,7 +10,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="./assets/css/site.css">
 </head>
 <body>
@@ -134,7 +133,10 @@
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Forstørret prosjektbilde" aria-hidden="true">
     <div class="lightbox-inner">
       <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Lukk bildevisning">×</button>
+      <button class="lightbox-nav lightbox-prev" id="lightboxPrev" type="button" aria-label="Forrige bilde">‹</button>
       <img id="lightboxImage" alt="Forstørret prosjektbilde">
+      <button class="lightbox-nav lightbox-next" id="lightboxNext" type="button" aria-label="Neste bilde">›</button>
+      <span class="lightbox-count" id="lightboxCount" aria-live="polite"></span>
     </div>
   </div>
 
