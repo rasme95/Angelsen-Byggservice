@@ -91,8 +91,7 @@
         })
         .filter(function (item) {
           return item.project.showOnHomepage !== false;
-        })
-        .slice(0, 5));
+        }));
     }
     if (dom.allProjectList) {
       renderProjectGrid(dom.allProjectList, siteData.projects.map(function (project, index) {
