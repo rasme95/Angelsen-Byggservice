@@ -16,5 +16,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Installer avhengigheter
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.25.0 --activate
+          pnpm install --frozen-lockfile
       - name: Kontroller JavaScript og lokale filreferanser
         run: node scripts/check-site.mjs
+      - name: Kontroller serverfunksjoner og bygg nettsiden
+        run: |
+          node --check netlify/functions/auth.mjs
+          node --check netlify/functions/site-data.mjs
+          node --check netlify/functions/media.mjs
+          node --test tests/release-safety.mjs
+          node scripts/build-site.mjs

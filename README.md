@@ -1,33 +1,23 @@
-# Angelsen-Byggservice
+# Angelsen Byggservice
 
-Statisk nettside for Angelsen Byggservice bygget med HTML, CSS og JavaScript.
+Nettsiden bruker HTML, CSS og JavaScript. Publisert innhold og prosjektbilder lagres hos Netlify. Innlogging og lagring håndteres av Netlify Functions og Netlify Identity; det brukes ikke SQLite eller en separat databasetjeneste.
 
-## Struktur
+## Komme i gang med administrasjon
 
-- `index.html`: offentlig nettside
-- `auth/admin/index.html`: adminside som på vanlig statisk hosting gir stien `/auth/admin`
-- `assets/css`: stilark for offentlig side og admin
-- `assets/js`: delt datalagring, public script og admin script
+Før den nye administrasjonen kan brukes, må Netlify Identity aktiveres på nettstedet og registrering settes til kun invitasjon. Inviter administratoren og tildel kontoen rollen `admin` i Netlify Identity. Administratoren må akseptere invitasjonen og velge passord. Funksjonene avviser endringer og bildeopplastinger uten denne rollen. Ingen passord eller nøkler skal legges i kildekoden.
 
-## Admin
+På `/auth/admin/` kan administrator redigere kontaktinformasjon, endre rekkefølge, legge til og fjerne prosjekter og laste opp JPEG-, PNG- eller WebP-bilder på opptil 4 MB per bilde. Endringer blir synlige når de lagres. Bildeopplasting lagrer selve bildet umiddelbart; det vises på nettsiden etter at prosjektet er lagret. Bilder som fjernes fra et prosjekt, slettes ikke automatisk fra lagringen.
 
-Adminsiden bruker en enkel frontend-innlogging uten backend eller ekte autentisering.
+**Migrering:** Den gamle administrasjonen lagret endringer bare i nettleserens `localStorage`. De er ikke automatisk overført til den felles lagringen. Kontroller og ta vare på eventuelle lokale endringer før overgangen. Standardprosjektene i kildekoden brukes inntil felles innhold er lagret første gang.
 
-- Innloggingen er kun en lokal demonstrasjon og gir ingen reell tilgangsbeskyttelse.
-- Endringer lagres i nettleserens `localStorage`
-- Hver opprettede prosjekt-grid blir en egen karusell på forsiden
-- Bilder kan legges inn som URL-er/stier eller lastes opp direkte fra maskinen i admin
+Netlify Blobs-lagrene er felles for nettstedets deployer. Endringer og opplastinger er derfor sperret i forhåndsvisninger. Tidligere versjoner av innholdet lagres i `history/` før hver endring, og prosjektbilder slettes ikke automatisk; gjenoppretting er foreløpig manuell. Etabler også en ekstern sikkerhetskopi av innhold og bilder før løsningen tas i produksjonsbruk; tilbakeføring av kode er ikke sikkerhetskopi av innhold.
 
 ## Kontakt
 
-Forsiden har et kontaktskjema som åpner brukerens e-postklient med en ferdig utfylt melding til `angel.bygg@outlook.com`. Brukeren må selv sende meldingen.
+Kontaktskjemaet åpner en ferdig utfylt e-post i besøkerens e-postprogram. Besøkeren må selv sende meldingen. Kontaktinformasjon kan endres i administrasjonen.
 
-## Begrensning
+## Utvikling og publisering
 
-Løsningen er bevisst statisk. Adminsiden er derfor ikke sikker på serversiden og publiserer ikke filer automatisk. For ekte sikkerhet, publisering, brukerhåndtering og bildeopplasting må dette senere kobles til backend eller CMS.
+Installer avhengigheter fra `pnpm-lock.yaml`, og bruk Netlify Dev for å teste Functions, Identity og Blobs. En vanlig statisk server kan vise nettsiden, men kan ikke teste felles lagring eller innlogging. `node scripts/check-site.mjs` kontrollerer JavaScript-syntaks og lokale HTML-referanser. `node scripts/build-site.mjs` kopierer offentlige filer til `dist/`; serverkode, avhengigheter og prosjektfiler er ikke en del av publiseringsmappen.
 
-## Kontroller og publisering
-
-Kjør `node scripts/check-site.mjs` for å kontrollere JavaScript-syntaks og lokale filreferanser i HTML-sidene. Kontrollen kjøres også i GitHub Actions ved push og pull request og som byggkommando på Netlify når Git-basert publisering er koblet opp. Dette erstatter ikke testing av brukerreiser, tilgjengelighet eller sikkerhet.
-
-GitHub-koblingen, produksjonsbranch og automatiske deployer må verifiseres i Netlify før automatisk publisering kan regnes som aktiv. Kontroller gjerne en forhåndsvisning før endringer legges i produksjonsbranchen, og bekreft at den publiserte siden fungerer etterpå. Netlify og GitHub Actions kjører separat; GitHub-kontrollen stopper ikke i seg selv en Netlify-deploy.
+GitHub Actions kjører kontroller ved push og pull request. Netlify kjører kontrollene og bygger `dist/` ved deploy. GitHub-kontrollen stopper ikke i seg selv Netlify-deploy; kontrollen i Netlifys byggkommando må bestå. Automatiske kontroller erstatter ikke testing av reelle brukerreiser, tilgangsstyring eller tilgjengelighet.

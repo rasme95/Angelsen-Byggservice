@@ -38,6 +38,10 @@ body {
 .toolbar { margin-top: 16px; }
 .admin-note, .login-help, .status-text { color: var(--muted); line-height: 1.6; }
 .status-text.error { color: #9f2531; }
+.image-list { display: flex; gap: 12px; flex-wrap: wrap; }
+.image-item { display: grid; gap: 8px; width: 140px; }
+.image-item img { width: 140px; height: 100px; object-fit: cover; border-radius: 12px; }
+.image-item .button { padding: 8px; font-size: 0.85rem; }
 .toggle-field .toggle-row { display: flex; align-items: center; gap: 10px; font-weight: 700; }
 .toggle-field input[type="checkbox"] { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
 @media (max-width: 900px) {

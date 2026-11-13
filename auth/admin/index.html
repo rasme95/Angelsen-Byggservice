@@ -20,7 +20,7 @@
         <div>
           <p class="eyebrow">Admin</p>
           <h1 style="font-size: clamp(2rem, 3vw, 3.2rem); max-width: none;">Enkel prosjektstyring</h1>
-          <p class="admin-note">Rediger innholdet som faktisk vises pa offentlig side.</p>
+          <p class="admin-note">Legg til prosjekter, bilder og kontaktinformasjon på nettsiden.</p>
         </div>
       </div>
       <a class="button secondary" href="../../index.html">Til offentlig side</a>
@@ -29,21 +29,28 @@
     <section class="login-panel" id="loginPanel">
       <p class="eyebrow">Innlogging</p>
       <h2>Åpne admin</h2>
-      <p class="login-help">Enkel frontend-innlogging uten backend.</p>
+      <p class="login-help">Logg inn med administratorkontoen din.</p>
       <div class="login-form">
         <label>
-          Brukernavn
-          <input id="usernameInput" type="text">
+          E-post
+          <input id="usernameInput" type="email" autocomplete="username">
         </label>
         <label>
           Passord
-          <input id="passwordInput" type="password">
+          <input id="passwordInput" type="password" autocomplete="current-password">
         </label>
       </div>
       <div class="toolbar">
         <button class="button primary" id="loginButton" type="button">Åpne adminpanel</button>
       </div>
       <p class="status-text error" id="loginMessage"></p>
+      <div id="invitePanel" hidden>
+        <h3>Velg et nytt passord</h3>
+        <label>Nytt passord (minst 12 tegn)
+          <input id="newPasswordInput" type="password" autocomplete="new-password" minlength="12">
+        </label>
+        <div class="toolbar"><button class="button primary" id="acceptInviteButton" type="button">Lagre passord</button></div>
+      </div>
     </section>
 
     <section class="admin-panel" id="appPanel" hidden>
@@ -70,7 +77,7 @@
 
         <article>
           <p class="eyebrow">Prosjekter</p>
-          <p class="admin-note">Lim inn bildeadresser eller last opp bilder direkte. Hvert prosjekt vises som en enkel karusell.</p>
+          <p class="admin-note">Legg til bilder og velg hvilke prosjekter som skal vises på forsiden. Endringene blir synlige når du lagrer.</p>
           <div class="project-editor-list" id="projectsEditor"></div>
           <div class="toolbar"><button class="button secondary" id="addProjectButton" type="button">Opprett nytt prosjekt</button></div>
         </article>
@@ -79,10 +86,10 @@
           <p class="eyebrow">Lagre</p>
           <div class="toolbar">
             <button class="button primary" id="saveButton" type="button">Lagre endringer</button>
-            <button class="button secondary" id="resetButton" type="button">Tilbakestill</button>
+            <button class="button secondary" id="resetButton" type="button">Forkast ulagrede endringer</button>
             <button class="button secondary" id="logoutButton" type="button">Logg ut</button>
           </div>
-          <p class="status-text" id="statusText"></p>
+          <p class="status-text" id="statusText" role="status" aria-live="polite"></p>
         </article>
       </div>
     </section>

@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="./assets/css/site.css">
 </head>
 <body>
+  <a class="skip-link" href="#top">Hopp til hovedinnhold</a>
   <div class="site-shell">
     <header class="site-header">
       <div class="wrap header-row">
@@ -76,6 +77,7 @@
             </div>
           </div>
           <div class="project-grid-list" id="projectGridList"></div>
+          <noscript><p>Prosjektgalleriet krever JavaScript. Kontakt oss gjerne for å høre om tidligere oppdrag.</p></noscript>
         </div>
       </section>
 
@@ -87,15 +89,15 @@
             <form id="contactForm" class="contact-form">
               <label>
                 Navn
-                <input id="contactName" name="name" type="text" required>
+                <input id="contactName" name="name" type="text" autocomplete="name" required>
               </label>
               <label>
                 Telefon
-                <input id="contactPhone" name="phone" type="text" required>
+                <input id="contactPhone" name="phone" type="tel" autocomplete="tel" required>
               </label>
               <label>
                 E-post
-                <input id="contactEmail" name="email" type="email" required>
+                <input id="contactEmail" name="email" type="email" autocomplete="email" required>
               </label>
               <label>
                 Type oppdrag
@@ -107,6 +109,7 @@
               </label>
               <div class="form-actions full-width">
                 <button class="button primary" type="submit">Åpne ferdig e-post</button>
+                <p id="contactHint">E-postprogrammet ditt åpnes. Husk å sende meldingen derfra.</p>
               </div>
             </form>
           </article>
@@ -128,7 +131,7 @@
     </footer>
   </div>
 
-  <div class="lightbox" id="lightbox" aria-hidden="true">
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Forstørret prosjektbilde" aria-hidden="true">
     <div class="lightbox-inner">
       <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Lukk bildevisning">×</button>
       <img id="lightboxImage" alt="Forstørret prosjektbilde">

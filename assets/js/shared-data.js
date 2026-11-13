@@ -142,8 +142,6 @@
     ]
   };
 
-  const adminCredentials = { username: "SveinAngelsen", password: "SveinAngelsen123" };
-
   function deepClone(value) {
     return JSON.parse(JSON.stringify(value));
   }
@@ -154,10 +152,10 @@
       return false;
     }
     // Keep uploaded/admin-managed images while filtering cluttered local file paths.
-    if (/^(https?:|data:|blob:)/i.test(value)) {
+    if (/^(https?:|data:|blob:)/i.test(value) || /^\/\.netlify\/functions\/media\?id=[a-f0-9-]+$/.test(value)) {
       return true;
     }
-    return curatedImagePaths.has(value);
+    return curatedImagePaths.has(value) || (/^Bilder\//.test(value) && !value.split('/').includes('..'));
   }
 
   function normalizeProject(project, index, defaultProject, fallbackImage) {
@@ -190,14 +188,11 @@
       services: Array.isArray(data && data.services) && data.services.length ? data.services : deepClone(defaultData.services)
     };
 
-    // Keep public contact email consistent across stored data versions.
-    merged.contact.email = defaultData.contact.email;
-
-    const rawProjects = Array.isArray(data && data.projects) && data.projects.length
+    const rawProjects = Array.isArray(data && data.projects)
       ? data.projects
       : [];
 
-    const projectCount = Math.max(rawProjects.length, defaultData.projects.length);
+    const projectCount = data && Array.isArray(data.projects) ? rawProjects.length : defaultData.projects.length;
     merged.projects = Array.from({ length: projectCount }).map(function (_, index) {
       return normalizeProject(rawProjects[index], index, defaultData.projects[index], merged.heroImage);
     });
@@ -240,7 +235,6 @@
   window.AngelsenStore = {
     storageKey: storageKey,
     adminSessionKey: adminSessionKey,
-    adminCredentials: adminCredentials,
     defaultData: deepClone(defaultData),
     loadSiteData: loadSiteData,
     saveSiteData: saveSiteData,

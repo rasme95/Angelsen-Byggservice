@@ -1,7 +1,13 @@
 (function () {
+  if (/^#(?:invite_token|recovery_token)=/.test(window.location.hash)) {
+    window.location.replace(new URL('auth/admin/' + window.location.hash, new URL('../../', document.currentScript.src)).href);
+    return;
+  }
   const store = window.AngelsenStore;
-  let siteData = store.loadSiteData();
+  let siteData = store.deepClone(store.defaultData);
+  let publishedData = null;
   const imageIndexes = {};
+  let lightboxTrigger = null;
 
   const dom = {
     brandName: document.getElementById("brandName"),
@@ -43,9 +49,13 @@
 
   renderSite();
   wireEvents();
+  fetch('/.netlify/functions/site-data', { cache: 'no-store' })
+    .then(function (response) { if (!response.ok) throw new Error('Innhold utilgjengelig'); return response.json(); })
+    .then(function (result) { if (result.data) { publishedData = store.normalizeData(result.data); renderSite(); } })
+    .catch(function () { /* Behold eksisterende innhold dersom tjenesten ikke er tilgjengelig. */ });
 
   function renderSite() {
-    siteData = store.loadSiteData();
+    siteData = publishedData || store.deepClone(store.defaultData);
 
     setText(dom.brandName, siteData.businessName);
     setText(dom.brandSubline, siteData.brandSubline);
@@ -67,8 +77,8 @@
     setHref(dom.footerEmail, "mailto:" + siteData.contact.email);
     setText(dom.footerPhone, siteData.contact.phone);
     setHref(dom.footerPhone, "tel:" + store.sanitizePhone(siteData.contact.phone));
-    setText(dom.contactHint, "Mottaker settes til " + siteData.contact.email + ".");
-    setText(dom.contactModalHint, "Mottaker settes til " + siteData.contact.email + ".");
+    setText(dom.contactHint, "E-postprogrammet åpnes med " + siteData.contact.email + " som mottaker. Husk å sende meldingen derfra.");
+    setText(dom.contactModalHint, "E-postprogrammet åpnes med " + siteData.contact.email + " som mottaker. Husk å sende meldingen derfra.");
 
     renderProjectLists();
   }
@@ -105,7 +115,7 @@
         + "<div class=\"gallery-main\">"
         + "<button class=\"open-lightbox-button gallery-expand-button\" type=\"button\" data-project-index=\"" + projectIndex + "\" aria-label=\"Utvid bilde\"><i class=\"fa-solid fa-up-right-and-down-left-from-center\" aria-hidden=\"true\"></i></button>"
         + "<button class=\"gallery-nav prev\" type=\"button\" data-project-index=\"" + projectIndex + "\" data-shift=\"-1\" aria-label=\"Forrige bilde\">‹</button>"
-        + "<img src=\"" + escapeAttribute(store.resolveAssetPath(currentImage)) + "\" alt=\"" + escapeAttribute(project.title + " bilde " + (currentIndex + 1)) + "\">"
+        + "<img loading=\"lazy\" decoding=\"async\" src=\"" + escapeAttribute(store.resolveAssetPath(currentImage)) + "\" alt=\"" + escapeAttribute(project.title + " bilde " + (currentIndex + 1)) + "\">"
         + "<button class=\"gallery-nav next\" type=\"button\" data-project-index=\"" + projectIndex + "\" data-shift=\"1\" aria-label=\"Neste bilde\">›</button>"
         + "</div>"
         + "</article>";
@@ -146,7 +156,13 @@
     const project = siteData.projects[projectIndex];
     const currentIndex = imageIndexes[projectIndex] || 0;
     imageIndexes[projectIndex] = (currentIndex + step + project.images.length) % project.images.length;
-    renderProjectLists();
+    document.querySelectorAll('.gallery-nav[data-project-index="' + projectIndex + '"]').forEach(function (button) {
+      const image = button.parentElement.querySelector('img');
+      if (image) {
+        image.src = store.resolveAssetPath(project.images[imageIndexes[projectIndex]]);
+        image.alt = project.title + " bilde " + (imageIndexes[projectIndex] + 1);
+      }
+    });
   }
 
   function wireEvents() {
@@ -186,7 +202,6 @@
           subject: dom.contactSubject.value.trim(),
           message: dom.contactMessage.value.trim()
         });
-        clearContactForm(false);
       });
     }
 
@@ -200,7 +215,6 @@
           subject: dom.modalContactSubject.value.trim(),
           message: dom.modalContactMessage.value.trim()
         });
-        clearContactForm(true);
       });
     }
 
@@ -223,6 +237,10 @@
     }
 
     document.addEventListener("keydown", function (event) {
+      if (event.key === "Tab" && dom.lightbox && dom.lightbox.classList.contains("open")) {
+        event.preventDefault();
+        dom.lightboxClose.focus();
+      }
       if (event.key === "Escape") {
         closeLightbox();
         closeContactModal();
@@ -239,17 +257,22 @@
     if (!dom.lightbox || !dom.lightboxImage) {
       return;
     }
+    lightboxTrigger = document.activeElement;
     dom.lightboxImage.src = store.resolveAssetPath(image);
     dom.lightbox.classList.add("open");
     dom.lightbox.setAttribute("aria-hidden", "false");
+    dom.lightboxClose.focus();
   }
 
   function closeLightbox() {
     if (!dom.lightbox) {
       return;
     }
+    if (!dom.lightbox.classList.contains("open")) return;
     dom.lightbox.classList.remove("open");
     dom.lightbox.setAttribute("aria-hidden", "true");
+    if (lightboxTrigger && typeof lightboxTrigger.focus === "function") lightboxTrigger.focus();
+    lightboxTrigger = null;
   }
 
   function openContactModal() {
@@ -284,23 +307,6 @@
       + "&body=" + encodeURIComponent(lines.join("\n"));
 
     window.location.href = mailto;
-  }
-
-  function clearContactForm(isModal) {
-    if (isModal) {
-      dom.modalContactName.value = "";
-      dom.modalContactPhone.value = "";
-      dom.modalContactEmail.value = "";
-      dom.modalContactSubject.value = "";
-      dom.modalContactMessage.value = "";
-      return;
-    }
-
-    dom.contactName.value = "";
-    dom.contactPhone.value = "";
-    dom.contactEmail.value = "";
-    dom.contactSubject.value = "";
-    dom.contactMessage.value = "";
   }
 
   function escapeHtml(value) {

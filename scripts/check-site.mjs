@@ -4,6 +4,7 @@ import { Script } from 'node:vm';
 
 const pages = ['index.html', 'prosjekter/index.html', 'auth/admin/index.html'];
 const scripts = ['assets/js/shared-data.js', 'assets/js/site.js', 'assets/js/admin.js'];
+const modules = ['netlify/functions/auth.mjs', 'netlify/functions/site-data.mjs', 'netlify/functions/media.mjs', 'scripts/build-site.mjs'];
 let errors = 0;
 
 for (const file of scripts) {
@@ -14,6 +15,10 @@ for (const file of scripts) {
     console.error(`JavaScript-feil i ${file}:\n${error.message}`);
     errors++;
   }
+}
+
+for (const file of modules) {
+  if (!existsSync(file)) { console.error(`Mangler modul: ${file}`); errors++; }
 }
 
 for (const page of pages) {

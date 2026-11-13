@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="../assets/css/site.css">
 </head>
 <body class="projects-page">
+  <a class="skip-link" href="#top">Hopp til hovedinnhold</a>
   <div class="site-shell">
     <header class="site-header">
       <div class="wrap header-row">
@@ -54,6 +55,7 @@
             </div>
           </div>
           <div class="project-grid-list project-page-list" id="allProjectList"></div>
+          <noscript><p>Prosjektgalleriet krever JavaScript. Kontakt oss gjerne for å høre om tidligere oppdrag.</p></noscript>
         </div>
       </section>
     </main>
@@ -72,7 +74,7 @@
     </footer>
   </div>
 
-  <div class="lightbox" id="lightbox" aria-hidden="true">
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Forstørret prosjektbilde" aria-hidden="true">
     <div class="lightbox-inner">
       <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Lukk bildevisning">×</button>
       <img id="lightboxImage" alt="Forstørret prosjektbilde">

@@ -1,2 +1,7 @@
 [build]
-  command = "node scripts/check-site.mjs"
+  command = "node scripts/check-site.mjs && node --check netlify/functions/auth.mjs && node --check netlify/functions/site-data.mjs && node --check netlify/functions/media.mjs && node --test tests/release-safety.mjs && node scripts/build-site.mjs"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  PNPM_VERSION = "11.25.0"
