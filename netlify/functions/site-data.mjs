@@ -1,5 +1,6 @@
 import { getStore } from '@netlify/blobs';
 import { getUser, verifyRequestOrigin } from '@netlify/identity';
+import { isAdministrator } from '../lib/access.mjs';
 
 const headers = { 'Cache-Control': 'no-store' };
 const isString = (value, max = 500) => typeof value === 'string' && value.length <= max;
@@ -24,7 +25,7 @@ export default async (request, context) => {
     if (request.method !== 'PUT') return new Response('Metoden støttes ikke', { status: 405, headers });
     verifyRequestOrigin(request);
     const user = await getUser();
-    if (!user?.roles?.includes('admin')) return new Response('Ikke tilgang', { status: 403, headers });
+    if (!isAdministrator(user)) return new Response('Ikke tilgang', { status: 403, headers });
     const store = getStore({ name: 'angelsen-content', region: 'eu-central-1', consistency: 'strong' });
     if (Number(request.headers.get('content-length') || 0) > 500000) return new Response('For mye innhold', { status: 413, headers });
     const text = await request.text();

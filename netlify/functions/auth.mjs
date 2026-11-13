@@ -1,11 +1,12 @@
 import { acceptInvite, getUser, login, logout, recoverPassword, verifyRequestOrigin } from '@netlify/identity';
+import { isAdministrator } from '../lib/access.mjs';
 
 export default async (request) => {
   const headers = { 'Cache-Control': 'no-store' };
   try {
     if (request.method === 'GET') {
       const user = await getUser();
-      return Response.json({ authenticated: !!user?.roles?.includes('admin') }, { headers });
+      return Response.json({ authenticated: isAdministrator(user) }, { headers });
     }
     if (request.method !== 'POST') return new Response('Metoden støttes ikke', { status: 405, headers });
     verifyRequestOrigin(request);

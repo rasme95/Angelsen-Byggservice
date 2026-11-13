@@ -1,5 +1,6 @@
 import { getStore } from '@netlify/blobs';
 import { getUser, verifyRequestOrigin } from '@netlify/identity';
+import { isAdministrator } from '../lib/access.mjs';
 
 export default async (request, context) => {
   try {
@@ -15,7 +16,7 @@ export default async (request, context) => {
     if (request.method !== 'POST') return new Response('Metoden støttes ikke', { status: 405 });
     verifyRequestOrigin(request);
     const user = await getUser();
-    if (!user?.roles?.includes('admin')) return new Response('Ikke tilgang', { status: 403 });
+    if (!isAdministrator(user)) return new Response('Ikke tilgang', { status: 403 });
     const store = getStore({ name: 'angelsen-images', region: 'eu-central-1', consistency: 'strong' });
     if (Number(request.headers.get('content-length') || 0) > 4000000) return new Response('Bildet er for stort', { status: 413 });
     const data = new Uint8Array(await request.arrayBuffer());
